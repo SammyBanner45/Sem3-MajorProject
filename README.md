@@ -274,9 +274,9 @@ The App Launcher estimates carbon emissions using AI-assisted calculations based
 The project is divided into three independent modules so each member can develop and test their features separately. All members will follow the shared database schema and agreed interfaces to ensure smooth integration.
 
 ### The Team
-### Member 1: Shubham Tale
-### Member 2: Yug Dhamecha
-### Member 3: Sambuddha Banerjee
+Member 1: Shubham Tale
+Member 2: Yug Dhamecha
+Member 3: Sambuddha Banerjee
 
 ### Roles
 
