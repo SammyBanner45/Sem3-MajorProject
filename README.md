@@ -278,7 +278,7 @@ The project is divided into three independent modules so each member can develop
 ### Member 2: Yug Dhamecha
 ### Member 3: Sambuddha Banerjee
 
-
+###Roles
 
 ### Member 1: Accounts and Rewards
 **Owns:** `auth`, `home`, `profile`, `streak`, `coupons`, `leaderboard`
