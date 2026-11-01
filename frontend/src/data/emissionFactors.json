@@ -1,0 +1,18 @@
+{
+  "travel": {
+    "auto": { "unit": "kg CO2e/km", "value": 0.192, "source": "verify" },
+    "bike": { "unit": "kg CO2e/km", "value": 0, "source": "direct tailpipe emissions; verify lifecycle accounting" },
+    "cab": { "unit": "kg CO2e/km", "value": 0.192, "source": "verify" },
+    "bus": { "unit": "kg CO2e/km", "value": 0.089, "source": "verify" },
+    "car": { "unit": "kg CO2e/km", "value": 0.192, "source": "verify" },
+    "train": { "unit": "kg CO2e/km", "value": 0.041, "source": "verify" },
+    "metro": { "unit": "kg CO2e/km", "value": 0.035, "source": "verify" },
+    "walk": { "unit": "kg CO2e/km", "value": 0, "source": "direct emissions" }
+  },
+  "food": {
+    "vegItem": { "unit": "kg CO2e/item", "value": 0.7, "source": "verify" },
+    "nonVegItem": { "unit": "kg CO2e/item", "value": 2.5, "source": "verify" },
+    "deliveryVehicle": { "unit": "kg CO2e/km", "value": 0.192, "source": "verify" },
+    "packaging": { "unit": "kg CO2e/order", "value": 0.1, "source": "verify" }
+  }
+}

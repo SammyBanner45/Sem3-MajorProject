@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Profile {
+  id       String    @id @db.Uuid
+  userApps UserApp[]
+  co2Logs  Co2Log[]
+
+  @@map("profiles")
+}
+
+// App Launcher and CO2 Calculator models.
+enum UserAppCategory {
+  travel
+  food
+  grocery
+}
+
+enum Co2LogType {
+  travel
+  food
+}
+
+enum Co2LogStatus {
+  pending_log
+  logged
+}
+
+model UserApp {
+  id        String          @id @default(uuid()) @db.Uuid
+  userId    String          @db.Uuid
+  name      String
+  category  UserAppCategory
+  icon      String
+  url       String
+  createdAt DateTime        @default(now())
+  profile   Profile         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Co2Log {
+  id         String       @id @default(uuid()) @db.Uuid
+  userId     String       @db.Uuid
+  type       Co2LogType
+  status     Co2LogStatus
+  co2Kg      Float
+  distanceKm Float?
+  details    Json
+  createdAt  DateTime     @default(now())
+  loggedAt   DateTime?
+  profile    Profile      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
