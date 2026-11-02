@@ -4,17 +4,132 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================
+// Member 1: Accounts and Rewards
+// Owns: auth, home, profile, streak, coupons, leaderboard
+// Models: Profile, Coupon, UserCoupon
+// ==========================================
+
+enum Role {
+  user
+  admin
 }
 
 model Profile {
-  id       String    @id @db.Uuid
-  userApps UserApp[]
-  co2Logs  Co2Log[]
+  id             String       @id @default(uuid()) @db.Uuid
+  email          String       @unique
+  passwordHash   String
+  displayName    String
+  role           Role         @default(user)
+  currentStreak  Int          @default(0)
+  lastStreakDate DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  // Member 1 relations
+  userCoupons    UserCoupon[]
+
+  // Member 2 relations
+  submissions    Submission[]
+
+  // Member 3 relations
+  userApps       UserApp[]
+  co2Logs        Co2Log[]
 
   @@map("profiles")
 }
 
-// App Launcher and CO2 Calculator models.
+model Coupon {
+  id            String       @id @default(uuid()) @db.Uuid
+  title         String
+  description   String?
+  discount      String
+  milestoneDays Int
+  isRecurring   Boolean      @default(false)
+  createdAt     DateTime     @default(now())
+
+  userCoupons   UserCoupon[]
+
+  @@map("coupons")
+}
+
+model UserCoupon {
+  id           String    @id @default(uuid()) @db.Uuid
+  userId       String    @db.Uuid
+  couponId     String?   @db.Uuid
+  milestoneDay Int
+  code         String    @unique
+  awardedAt    DateTime  @default(now())
+  isRedeemed   Boolean   @default(false)
+
+  profile      Profile   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  coupon       Coupon?   @relation(fields: [couponId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([couponId])
+  @@map("user_coupons")
+}
+
+// ==========================================
+// Member 2: Activities and Photo Proof
+// Owns: activities, challenges, proof
+// Models: Task, Submission
+// ==========================================
+
+enum TaskType {
+  activity
+  challenge
+}
+
+enum SubmissionStatus {
+  pending
+  approved
+  rejected
+}
+
+model Task {
+  id            String       @id @default(uuid()) @db.Uuid
+  title         String
+  description   String?
+  type          TaskType
+  points        Int
+  challengeDate DateTime?
+  createdAt     DateTime     @default(now())
+
+  submissions   Submission[]
+
+  @@map("tasks")
+}
+
+model Submission {
+  id              String           @id @default(uuid()) @db.Uuid
+  userId          String           @db.Uuid
+  taskId          String           @db.Uuid
+  photoUrl        String
+  status          SubmissionStatus @default(pending)
+  reviewedAt      DateTime?
+  reviewedBy      String?          @db.Uuid
+  rejectionReason String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  profile         Profile          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task            Task             @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([taskId])
+  @@map("submissions")
+}
+
+// ==========================================
+// Member 3: App Launcher and CO2 Calculator
+// Owns: apps, data/emissionFactors.json
+// Models: UserApp, Co2Log
+// ==========================================
+
 enum UserAppCategory {
   travel
   food
@@ -39,9 +154,11 @@ model UserApp {
   icon      String
   url       String
   createdAt DateTime        @default(now())
+
   profile   Profile         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@map("user_apps")
 }
 
 model Co2Log {
@@ -54,7 +171,9 @@ model Co2Log {
   details    Json
   createdAt  DateTime     @default(now())
   loggedAt   DateTime?
+
   profile    Profile      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@map("co2_logs")
 }
