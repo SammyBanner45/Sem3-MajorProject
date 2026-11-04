@@ -1,8 +1,11 @@
+require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const appsRouter = require('./routes/apps.routes');
 const co2Router = require('./routes/co2.routes');
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use('/api/apps', appsRouter);
 app.use('/api/co2', co2Router);
