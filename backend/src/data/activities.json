@@ -1,0 +1,62 @@
+[
+  {
+    "title": "Bicycle Commute",
+    "description": "Cycle to work, school, or errands instead of taking a motorized vehicle.",
+    "icon": "🚲",
+    "points": 20
+  },
+  {
+    "title": "Public Transit Ride",
+    "description": "Take the public bus, metro, or local train for your daily travel.",
+    "icon": "🚌",
+    "points": 15
+  },
+  {
+    "title": "Proper Garbage Disposal",
+    "description": "Segregate dry, wet, and recyclable waste and dispose of them responsibly.",
+    "icon": "♻️",
+    "points": 15
+  },
+  {
+    "title": "Feed Stray Animals",
+    "description": "Provide clean water and healthy food to stray animals or birds in your neighborhood.",
+    "icon": "🐕",
+    "points": 15
+  },
+  {
+    "title": "Plant or Care for a Sapling",
+    "description": "Plant a new sapling or water and prune existing plants in your garden or locality.",
+    "icon": "🌱",
+    "points": 25
+  },
+  {
+    "title": "Reusable Bag Shopping",
+    "description": "Use your own cloth or jute reusable bag for grocery or retail shopping.",
+    "icon": "🛍️",
+    "points": 10
+  },
+  {
+    "title": "Carry Reusable Bottle / Mug",
+    "description": "Carry and refill your own reusable water bottle or thermos throughout the day.",
+    "icon": "🍶",
+    "points": 10
+  },
+  {
+    "title": "Kitchen Waste Composting",
+    "description": "Compost fruit peels, vegetable scraps, and tea leaves to create organic fertilizer.",
+    "icon": "🍂",
+    "points": 20
+  },
+  {
+    "title": "Walk for Short Trips",
+    "description": "Walk instead of driving or booking a cab for trips under 2 km.",
+    "icon": "🚶",
+    "points": 15
+  },
+  {
+    "title": "Power Down Idle Electronics",
+    "description": "Turn off idle lights, fans, and unplug phantom power consumers before leaving.",
+    "icon": "💡",
+    "points": 10
+  }
+]

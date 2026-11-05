@@ -5,6 +5,8 @@ const cors = require('cors');
 // Upstream routers
 const appsRouter = require('./routes/apps.routes');
 const co2Router = require('./routes/co2.routes');
+const tasksRouter = require('./routes/tasks.routes');
+const submissionsRouter = require('./routes/submissions.routes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -27,6 +29,8 @@ app.use('/api/apps', appsRouter);
 app.use('/api/co2', co2Router);
 
 // Upstream error handling middleware
+app.use('/api/tasks', tasksRouter);
+app.use('/api/submissions', submissionsRouter);
 app.use((error, req, res, next) => {
   if (res.headersSent) return next(error);
   const status = error instanceof TypeError || error instanceof RangeError ? 400 : 500;
