@@ -1,11 +1,13 @@
 const express = require('express');
 const appsRouter = require('./routes/apps.routes');
 const co2Router = require('./routes/co2.routes');
+const tasksRouter = require('./routes/tasks.routes');
 
 const app = express();
 app.use(express.json());
 app.use('/api/apps', appsRouter);
 app.use('/api/co2', co2Router);
+app.use('/api/tasks', tasksRouter);
 app.use((error, req, res, next) => {
   if (res.headersSent) return next(error);
   const status = error instanceof TypeError || error instanceof RangeError ? 400 : 500;
