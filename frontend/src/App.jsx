@@ -9,7 +9,7 @@ import Leaderboard from './features/leaderboard';
 import Profile from './features/profile';
 import Auth from './features/auth';
 import Challenges from './features/challenges';
-import Proof from './features/proof';
+import Proof, { AdminReviewPage } from './features/proof';
 import Streak from './features/streak';
 import Coupons from './features/coupons';
 
@@ -44,6 +44,7 @@ export default function App() {
           <Route path="/auth" element={<Auth />} />
           <Route path="/challenges" element={<Challenges />} />
           <Route path="/proof" element={<Proof />} />
+          <Route path="/admin/review" element={<AdminReviewPage />} />
           <Route path="/streak" element={<Streak />} />
           <Route path="/coupons" element={<Coupons />} />
         </Routes>
