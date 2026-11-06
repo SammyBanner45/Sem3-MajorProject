@@ -133,8 +133,17 @@ export default function Proof() {
             <p className="text-xs text-gray-500">Live camera-only verification</p>
           </div>
         </div>
-        <div className="w-9 h-9 rounded-xl bg-eco-100 flex items-center justify-center text-eco-700 shadow-2xs">
-          <Camera className="w-5 h-5" />
+        <div className="flex items-center gap-1.5">
+          <Link
+            to="/admin/review"
+            className="text-[11px] font-bold text-eco-700 bg-eco-50 hover:bg-eco-100 border border-eco-200 px-2.5 py-1.5 rounded-xl transition flex items-center gap-1 shadow-2xs"
+          >
+            <ShieldAlert className="w-3.5 h-3.5" />
+            <span>Review Queue</span>
+          </Link>
+          <div className="w-9 h-9 rounded-xl bg-eco-100 flex items-center justify-center text-eco-700 shadow-2xs">
+            <Camera className="w-5 h-5" />
+          </div>
         </div>
       </div>
 
