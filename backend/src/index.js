@@ -3,6 +3,11 @@ require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 const express = require('express');
 const cors = require('cors');
+const appsRouter = require('./routes/apps.routes');
+const co2Router = require('./routes/co2.routes');
+const tasksRouter = require('./routes/tasks.routes');
+const submissionsRouter = require('./routes/submissions.routes');
+const adminRouter = require('./routes/admin.routes');
 const healthRouter = require('./routes/health');
 const { createAuthRouter } = require('./routes/auth');
 const { createProfileRouter } = require('./routes/profile');
@@ -28,7 +33,18 @@ function createApp({ prisma }) {
   const app = express();
   app.use(cors(corsOptions()));
   app.use(express.json());
+
   app.use('/health', healthRouter);
+  app.get('/api/health', (req, res) => {
+    res.json({ status: 'ok', app: 'EcoSync API', timestamp: new Date().toISOString() });
+  });
+
+  app.use('/api/apps', appsRouter);
+  app.use('/api/co2', co2Router);
+  app.use('/api/tasks', tasksRouter);
+  app.use('/api/submissions', submissionsRouter);
+  app.use('/api/admin', adminRouter);
+
   app.use('/api/auth', createAuthRouter(prisma));
   app.use('/api/profile', createProfileRouter(prisma));
   app.use(errorHandler);

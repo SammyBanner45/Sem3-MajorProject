@@ -1,0 +1,86 @@
+[
+  {
+    "title": "Zero Single-Use Plastic Day",
+    "description": "Go the whole day without accepting or using any single-use plastic cups, straws, or bags.",
+    "icon": "🚫",
+    "points": 50
+  },
+  {
+    "title": "Meatless Green Day",
+    "description": "Eat entirely plant-based meals today to significantly lower dietary carbon emissions.",
+    "icon": "🥗",
+    "points": 45
+  },
+  {
+    "title": "Car-Free Day",
+    "description": "Complete all your travel today strictly using walking, cycling, or public transport.",
+    "icon": "🚆",
+    "points": 50
+  },
+  {
+    "title": "Neighborhood Litter Cleanup",
+    "description": "Spend 15 minutes picking up and properly disposing of trash in your street or local park.",
+    "icon": "🧹",
+    "points": 50
+  },
+  {
+    "title": "Digital Carbon Declutter",
+    "description": "Delete unneeded cloud files, inbox spam, and duplicates to save data center energy.",
+    "icon": "💻",
+    "points": 35
+  },
+  {
+    "title": "Cold Water Laundry & Line Dry",
+    "description": "Wash clothes using cold water and air dry them on a clothesline without using a dryer.",
+    "icon": "🧺",
+    "points": 40
+  },
+  {
+    "title": "Community Tree Watering",
+    "description": "Provide fresh water to at least 5 roadside trees or community garden plants.",
+    "icon": "🌳",
+    "points": 45
+  },
+  {
+    "title": "Zero Food Waste Kitchen",
+    "description": "Cook all meals from existing pantry ingredients and leftovers with zero edible waste.",
+    "icon": "🍲",
+    "points": 40
+  },
+  {
+    "title": "Stair Climber Challenge",
+    "description": "Skip the elevator all day and take the stairs for every floor you climb.",
+    "icon": "🪜",
+    "points": 35
+  },
+  {
+    "title": "BYO Container Takeout",
+    "description": "Bring your own lunchbox or container when picking up food or beverages.",
+    "icon": "🍱",
+    "points": 45
+  },
+  {
+    "title": "Shop at Local Farmers Market",
+    "description": "Purchase fresh seasonal vegetables or fruits from a local farmer or street vendor.",
+    "icon": "🍎",
+    "points": 40
+  },
+  {
+    "title": "Vampire Power Shutdown",
+    "description": "Unplug all chargers, monitors, microwaves, and power strips before going to sleep.",
+    "icon": "🔌",
+    "points": 35
+  },
+  {
+    "title": "Urban Bird Water Station",
+    "description": "Set up a clean shallow bowl of water and grains for urban birds on your balcony or roof.",
+    "icon": "🐦",
+    "points": 40
+  },
+  {
+    "title": "10 km Cycling Odyssey",
+    "description": "Clock at least 10 kilometers of cycling in a single day for exercise and clean mobility.",
+    "icon": "🚴",
+    "points": 60
+  }
+]

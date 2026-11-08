@@ -21,4 +21,26 @@ function getPrismaClient() {
   return prismaPromise;
 }
 
-module.exports = { getPrismaClient };
+// Existing Member 2/3 controllers import Prisma synchronously. This lazy facade
+// preserves that interface while the Prisma 7 ESM client and PG adapter load asynchronously.
+function createDelegateProxy(delegateName) {
+  return new Proxy({}, {
+    get(_target, method) {
+      if (method === 'then') return undefined;
+      return (...args) => getPrismaClient().then((client) => client[delegateName][method](...args));
+    },
+  });
+}
+
+const prisma = new Proxy({}, {
+  get(_target, property) {
+    if (property === 'then') return undefined;
+    if (property === 'getPrismaClient') return getPrismaClient;
+    if (property === '$disconnect') {
+      return (...args) => getPrismaClient().then((client) => client.$disconnect(...args));
+    }
+    return createDelegateProxy(property);
+  },
+});
+
+module.exports = prisma;
