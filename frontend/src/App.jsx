@@ -1,57 +1,69 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-
-// Feature route components exported from each feature's index.js (one line each per contract)
+import { Link, Navigate, Outlet, Route, Routes } from 'react-router-dom';
+import { Leaf } from 'lucide-react';
 import Home from './features/home';
 import Activities from './features/activities';
 import Apps from './features/apps';
 import Leaderboard from './features/leaderboard';
 import Profile from './features/profile';
-import Auth from './features/auth';
+import AuthRedirect from './features/auth/Auth.jsx';
+import { AdminRoute, AuthProvider, LoginPage, ProtectedRoute, SignupPage } from './features/auth';
 import Challenges from './features/challenges';
 import Proof, { AdminReviewPage } from './features/proof';
 import Streak from './features/streak';
 import Coupons from './features/coupons';
-
 import BottomNav from './components/BottomNav';
 
-export default function App() {
+function AppShell() {
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-between">
-      {/* Top Header */}
-      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 px-4 py-3 shadow-xs">
-        <div className="max-w-md mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xl">🌱</span>
-            <span className="font-extrabold text-base tracking-tight text-eco-800">
-              EcoSync
+    <div className="flex min-h-screen flex-col bg-slate-50">
+      <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 px-4 py-3 shadow-sm backdrop-blur-md">
+        <div className="mx-auto flex max-w-3xl items-center justify-between">
+          <Link to="/" className="inline-flex items-center gap-2 rounded-lg focus:outline-none focus:ring-4 focus:ring-eco-100" aria-label="EcoSync home">
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-eco-100 text-eco-800">
+              <Leaf className="h-5 w-5" aria-hidden="true" />
             </span>
-          </div>
-          <span className="text-[11px] font-semibold text-eco-700 bg-eco-50 px-2.5 py-1 rounded-full border border-eco-100">
-            Pro Planet
-          </span>
+            <span className="text-base font-extrabold tracking-tight text-eco-900">EcoSync</span>
+          </Link>
+          <span className="rounded-full border border-eco-100 bg-eco-50 px-3 py-1 text-xs font-semibold text-eco-800">Small steps. Greener days.</span>
         </div>
       </header>
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-md w-full mx-auto p-4 pb-24">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/activities" element={<Activities />} />
-          <Route path="/apps" element={<Apps />} />
-          <Route path="/leaderboard" element={<Leaderboard />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/challenges" element={<Challenges />} />
-          <Route path="/proof" element={<Proof />} />
-          <Route path="/admin/review" element={<AdminReviewPage />} />
-          <Route path="/streak" element={<Streak />} />
-          <Route path="/coupons" element={<Coupons />} />
-        </Routes>
+      <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-5 pb-28 sm:px-6 sm:py-8">
+        <Outlet />
       </main>
-
-      {/* Mobile Bottom Navigation */}
       <BottomNav />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AuthProvider>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/auth" element={<AuthRedirect />} />
+
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AppShell />}>
+            <Route index element={<Home />} />
+            <Route path="activities" element={<Activities />} />
+            <Route path="apps" element={<Apps />} />
+            <Route path="leaderboard" element={<Leaderboard />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="challenges" element={<Challenges />} />
+            <Route path="proof" element={<Proof />} />
+            <Route path="streak" element={<Streak />} />
+            <Route path="coupons" element={<Coupons />} />
+            <Route element={<AdminRoute />}>
+              <Route path="admin/review" element={<AdminReviewPage />} />
+            </Route>
+          </Route>
+        </Route>
+
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </AuthProvider>
   );
 }

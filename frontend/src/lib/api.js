@@ -16,7 +16,7 @@ export async function apiFetch(path, options = {}) {
   } = options;
 
   const authToken = customToken ||
-    (typeof localStorage !== 'undefined' ? (localStorage.getItem('token') || localStorage.getItem('ecosync_token')) : null);
+    (typeof localStorage !== 'undefined' ? localStorage.getItem('ecosync_token') : null);
 
   const resolvedHeaders = {
     ...headers,
@@ -59,14 +59,24 @@ export async function apiFetch(path, options = {}) {
     : await response.text();
 
   if (!response.ok) {
-    const message =
-      (typeof data === 'object' && data !== null && (data.error || data.message)) ||
-      response.statusText ||
-      `HTTP ${response.status} Request failed`;
+    const errorMessage = typeof data === 'object' && data !== null
+      ? (data.error?.message || data.error || data.message)
+      : data;
+    const message = typeof errorMessage === 'string' && errorMessage
+      ? errorMessage
+      : response.statusText || `HTTP ${response.status} request failed`;
 
     const error = new Error(message);
     error.status = response.status;
     error.data = data;
+    if (response.status === 401 && typeof window !== 'undefined') {
+      if (typeof localStorage !== 'undefined') {
+        localStorage.removeItem('ecosync_token');
+        localStorage.removeItem('token');
+        localStorage.removeItem('authToken');
+      }
+      window.dispatchEvent(new Event('ecosync:unauthorized'));
+    }
     throw error;
   }
 
