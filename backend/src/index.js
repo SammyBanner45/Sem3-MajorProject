@@ -1,42 +1,61 @@
-require('dotenv').config();
+const path = require('node:path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 const express = require('express');
 const cors = require('cors');
-// Upstream routers
-const appsRouter = require('./routes/apps.routes');
-const co2Router = require('./routes/co2.routes');
+const healthRouter = require('./routes/health');
+const { createAuthRouter } = require('./routes/auth');
+const { createProfileRouter } = require('./routes/profile');
+const { errorHandler } = require('./middleware/errorHandler');
+const { assertJwtSecret } = require('./services/jwt');
+const { assertPasswordPepper } = require('./services/passwords');
+const { getPrismaClient } = require('./lib/prisma');
 
-const app = express();
-const PORT = process.env.PORT || 5000;
+function corsOptions(origins = process.env.CORS_ORIGINS || '') {
+  const allowedOrigins = new Set(origins.split(',').map((origin) => origin.trim()).filter(Boolean));
+  return {
+    origin(origin, callback) {
+      callback(null, !origin || allowedOrigins.has(origin));
+    },
+  };
+}
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+function createApp({ prisma }) {
+  if (!prisma) {
+    throw new TypeError('createApp requires a Prisma client');
+  }
 
-// Health endpoint (your original implementation)
-app.get('/api/health', (req, res) => {
-  res.json({
-    status: 'ok',
-    app: 'EcoSync API',
-    timestamp: new Date().toISOString()
+  const app = express();
+  app.use(cors(corsOptions()));
+  app.use(express.json());
+  app.use('/health', healthRouter);
+  app.use('/api/auth', createAuthRouter(prisma));
+  app.use('/api/profile', createProfileRouter(prisma));
+  app.use(errorHandler);
+  return app;
+}
+
+async function startServer({ port = process.env.PORT || 5000 } = {}) {
+  assertJwtSecret();
+  assertPasswordPepper();
+  const prisma = await getPrismaClient();
+  const app = createApp({ prisma });
+  const server = app.listen(port, () => {
+    console.log(`🚀 Backend listening on port ${port}`);
   });
-});
-
-// Upstream API routes
-app.use('/api/apps', appsRouter);
-app.use('/api/co2', co2Router);
-
-// Upstream error handling middleware
-app.use((error, req, res, next) => {
-  if (res.headersSent) return next(error);
-  const status = error instanceof TypeError || error instanceof RangeError ? 400 : 500;
-  return res.status(status).json({ error: error.message || 'Internal server error' });
-});
+  server.on('close', () => {
+    prisma.$disconnect().catch((error) => {
+      console.error('Failed to disconnect Prisma Client:', error);
+    });
+  });
+  return server;
+}
 
 if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`EcoSync backend listening on port ${PORT}`);
+  startServer().catch((error) => {
+    console.error('Backend startup failed:', error.message);
+    process.exitCode = 1;
   });
 }
 
-module.exports = app;
+module.exports = { createApp, corsOptions, startServer };

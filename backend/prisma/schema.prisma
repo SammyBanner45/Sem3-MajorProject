@@ -1,10 +1,14 @@
 generator client {
-  provider = "prisma-client-js"
+  provider               = "prisma-client"
+  output                 = "../src/generated/prisma"
+  runtime                = "nodejs"
+  moduleFormat           = "esm"
+  generatedFileExtension = "mts"
+  importFileExtension    = "mts"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 // ==========================================
@@ -13,23 +17,41 @@ datasource db {
 // Models: Profile, Coupon, UserCoupon
 // ==========================================
 
-enum Role {
+enum ProfileRole {
   user
   admin
+
+  @@map("ProfileRole")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  email        String?  @unique
+  passwordHash String?
+  role         Role     @default(USER)
+  profile      Profile?
+
+  @@map("users")
 }
 
 model Profile {
   id             String       @id @default(uuid()) @db.Uuid
-  email          String       @unique
-  passwordHash   String
+  email          String?      @unique
+  passwordHash   String?
   displayName    String
-  role           Role         @default(user)
+  role           ProfileRole  @default(user)
   currentStreak  Int          @default(0)
   lastStreakDate DateTime?
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
 
   // Member 1 relations
+  user           User         @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userCoupons    UserCoupon[]
 
   // Member 2 relations
@@ -65,8 +87,8 @@ model UserCoupon {
   awardedAt    DateTime  @default(now())
   isRedeemed   Boolean   @default(false)
 
-  profile      Profile   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  coupon       Coupon?   @relation(fields: [couponId], references: [id], onDelete: SetNull)
+  profile      Profile   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  coupon       Coupon?   @relation(fields: [couponId], references: [id], onDelete: SetNull, onUpdate: Cascade)
 
   @@index([userId])
   @@index([couponId])
@@ -116,8 +138,8 @@ model Submission {
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 
-  profile         Profile          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  task            Task             @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  profile         Profile          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  task            Task             @relation(fields: [taskId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([userId])
   @@index([taskId])
@@ -155,7 +177,7 @@ model UserApp {
   url       String
   createdAt DateTime        @default(now())
 
-  profile   Profile         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profile   Profile         @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([userId])
   @@map("user_apps")
@@ -172,7 +194,7 @@ model Co2Log {
   createdAt  DateTime     @default(now())
   loggedAt   DateTime?
 
-  profile    Profile      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profile    Profile      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@index([userId])
   @@map("co2_logs")
