@@ -14,7 +14,7 @@ const endpointRows = [
   }],
   ['POST /api/co2/travel/estimate', () => co2Api.estimateTravel({ origin: '12.9716,77.5946', destination: '12.9352,77.6245', vehicle: 'bus' })],
   ['POST /api/co2/travel', () => co2Api.saveTravel({ origin: '12.9716,77.5946', destination: '12.9352,77.6245', vehicle: 'bus' })],
-  ['POST /api/co2/food/pending', () => co2Api.pendingFood({ items: 2, isVeg: true, deliveryKm: 3, packaging: true })],
+  ['POST /api/co2/food/pending', () => co2Api.pendingFood({ items: 2, isVeg: true, deliveryKm: 3, packaging: true, nudges: ['skip_disposable_cutlery'] })],
   ['PATCH /api/co2/food/:id', async () => {
     const pending = await co2Api.logs('pending_log');
     const log = pending.find((item) => item.type === 'food');

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { co2Api } from './api';
+import { co2Api, notifyPointsUpdated } from './api';
 
 function getDetails(pendingLog) {
   return pendingLog?.details && typeof pendingLog.details === 'object' ? pendingLog.details : {};
@@ -49,6 +49,7 @@ export default function FoodLogPrompt({ pendingLog, onClose, onLogged }) {
     try {
       const logged = await co2Api.logFood(pendingLog.id, { items: itemCount, isVeg, deliveryKm: distance, packaging, nudges });
       setResult({ co2Kg: logged?.log?.co2Kg ?? logged?.co2Kg ?? 0, pointsEarned: logged?.pointsEarned ?? 0, capReached: logged?.capReached });
+      notifyPointsUpdated();
       onLogged?.(logged);
     } catch (requestError) {
       setError(requestError.message || 'Could not log this order.');

@@ -17,8 +17,8 @@ export default function AddAppModal({ onClose, onSave, saving }) {
   }
 
   return (
-    <div className="fixed inset-0 z-30 flex items-end bg-slate-950/40" role="dialog" aria-modal="true" aria-labelledby="add-app-title">
-      <form onSubmit={submit} className="max-h-[90dvh] w-full overflow-y-auto rounded-t-3xl bg-white p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-end bg-slate-950/40" role="dialog" aria-modal="true" aria-labelledby="add-app-title">
+      <form onSubmit={submit} className="max-h-[90dvh] w-full overflow-y-auto rounded-t-3xl bg-white p-5 pb-[calc(5rem+env(safe-area-inset-bottom))] shadow-xl">
         <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-slate-200" />
         <div className="flex items-center justify-between">
           <h2 id="add-app-title" className="text-xl font-bold text-slate-900">Add app</h2>

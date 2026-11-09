@@ -4,7 +4,11 @@ import { pointsApi } from './api';
 export default function FootprintTab() {
   const [mode, setMode] = useState('month'); const [summary, setSummary] = useState(null); const [history, setHistory] = useState([]); const [error, setError] = useState('');
   const load = () => { setError(''); Promise.all([pointsApi.summary(), pointsApi.history(6)]).then(([nextSummary, nextHistory]) => { setSummary(nextSummary); setHistory(nextHistory); }).catch((requestError) => setError(requestError.message)); };
-  useEffect(load, []);
+  useEffect(() => {
+    load();
+    window.addEventListener('ecosync:points-updated', load);
+    return () => window.removeEventListener('ecosync:points-updated', load);
+  }, []);
   if (error) return <div className="rounded-[20px] bg-[#151b19] p-4 text-sm text-[#9ca3af]">Could not load footprint. <button type="button" onClick={load} className="underline">Retry</button></div>;
   if (!summary) return <div className="space-y-3"><div className="h-12 animate-pulse rounded-xl bg-[#151b19]" /><div className="h-48 animate-pulse rounded-[20px] bg-[#151b19]" /></div>;
   const emitted = mode === 'month' ? summary.monthEmittedKg : summary.totalEmittedKg; const saved = mode === 'month' ? summary.monthEarned : summary.savedKg;

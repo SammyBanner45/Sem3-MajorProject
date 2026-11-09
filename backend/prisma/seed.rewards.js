@@ -1,6 +1,5 @@
-const { PrismaClient } = require('@prisma/client');
-
-const prisma = new PrismaClient();
+require('dotenv').config();
+const prisma = require('../src/lib/prisma');
 const rewards = [
   { brand: 'Campus Cafe', title: '₹50 off', description: 'A demo campus cafe voucher (demo)', kind: 'voucher', cost: 10, stock: 20, icon: '☕', terms: 'Valid at the demo Campus Cafe.', validDays: 30 },
   { brand: 'Reel Cinema', title: '₹100 off', description: 'A demo cinema voucher (demo)', kind: 'voucher', cost: 20, stock: 15, icon: '🎬', terms: 'Valid at the demo Reel Cinema.', validDays: 30 },
