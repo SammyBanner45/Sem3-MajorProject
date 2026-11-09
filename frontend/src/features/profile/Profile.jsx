@@ -5,6 +5,7 @@ import { apiFetch } from '../../lib/api.js';
 import { useAuth } from '../auth/AuthProvider.jsx';
 import useMyStats from './useMyStats.js';
 import Co2SummarySlot from './Co2SummarySlot.jsx';
+import { FootprintTab } from '../apps';
 
 function getErrorMessage(error) {
   return error.data?.error?.message || error.data?.message || error.message || 'Please try again.';
@@ -166,6 +167,11 @@ export default function Profile() {
       </section>
 
       <Co2SummarySlot />
+
+      <section aria-labelledby="footprint-title">
+        <h2 id="footprint-title" className="mb-3 text-lg font-extrabold text-slate-900">CO₂ footprint</h2>
+        <FootprintTab />
+      </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm" aria-labelledby="account-actions-title">
         <h2 id="account-actions-title" className="font-bold text-slate-900">Account actions</h2>

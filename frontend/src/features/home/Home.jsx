@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, CalendarCheck2, Compass, Flame, LayoutGrid, Sparkles } from 'lucide-react';
 import { useAuth } from '../auth/AuthProvider.jsx';
 import useStreak from '../streak/useStreak.js';
+import { MonthBars, TopBarPills } from '../apps';
 
 const destinations = [
   {
@@ -74,6 +75,9 @@ export default function Home() {
         </Link>
         {error && <p className="mt-2 text-xs leading-5 text-eco-100" role="status">{error}</p>}
       </section>
+
+      <TopBarPills />
+      <MonthBars />
 
       <section aria-labelledby="explore-title">
         <div className="mb-3 flex items-end justify-between gap-3">

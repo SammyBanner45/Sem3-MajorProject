@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import factors from '../../data/emissionFactors.json';
-import { appsApi, co2Api, hasRealToken, setDevUserId } from './api';
+import { appsApi, co2Api, hasRealToken, pointsApi, rewardsApi, setDevUserId } from './api';
 import { appPresets } from './presets';
 
 const endpointRows = [
@@ -22,7 +22,15 @@ const endpointRows = [
     return co2Api.logFood(log.id, { items: 2, isVeg: true, deliveryKm: 3, packaging: true });
   }],
   ['GET /api/co2/logs', () => co2Api.logs()],
-  ['GET /api/co2/summary', () => co2Api.summary()]
+  ['GET /api/co2/summary', () => co2Api.summary()],
+  ['GET /api/points/summary', () => pointsApi.summary()],
+  ['GET /api/points/history', () => pointsApi.history(6)],
+  ['GET /api/points/ledger', () => pointsApi.ledger(30)],
+  ['GET /api/rewards', () => rewardsApi.list()],
+  ['GET /api/rewards/mine', () => rewardsApi.mine()],
+  ['GET /api/rewards/wallet', () => rewardsApi.wallet()],
+  ['POST /api/rewards/:id/redeem', async () => { const rewards = await rewardsApi.list(); const reward = rewards.rewards?.find((item) => item.canAfford); if (!reward) throw new Error('No redeemable demo reward'); return rewardsApi.redeem(reward.id); }],
+  ['PATCH /api/rewards/wallet/:id/use', async () => { const wallet = await rewardsApi.wallet(); const coupon = wallet.find((item) => item.source === 'purchased' && item.status === 'active'); if (!coupon) throw new Error('No active purchased coupon'); return rewardsApi.use(coupon.id); }]
 ];
 
 function formatResult(result) {
@@ -33,7 +41,7 @@ export default function DevDashboardPage() {
   const [userId, setUserId] = useState('user-1');
   const [results, setResults] = useState({});
   const [running, setRunning] = useState(false);
-  const [raw, setRaw] = useState({ apps: [], logs: [], summary: null });
+  const [raw, setRaw] = useState({ apps: [], logs: [], summary: null, points: null, rewards: [] });
   const [distance, setDistance] = useState(10);
   const [vehicle, setVehicle] = useState('bus');
   const [food, setFood] = useState({ items: 2, isVeg: true, deliveryKm: 3, packaging: true });
@@ -41,8 +49,8 @@ export default function DevDashboardPage() {
   useEffect(() => setDevUserId(userId), [userId]);
 
   async function refreshRaw() {
-    const [apps, logs, summary] = await Promise.all([appsApi.list(), co2Api.logs(), co2Api.summary()]);
-    setRaw({ apps, logs, summary });
+    const [apps, logs, summary, points, rewards] = await Promise.all([appsApi.list(), co2Api.logs(), co2Api.summary(), pointsApi.summary(), rewardsApi.list()]);
+    setRaw({ apps, logs, summary, points, rewards });
   }
 
   async function testEndpoint(index, request) {

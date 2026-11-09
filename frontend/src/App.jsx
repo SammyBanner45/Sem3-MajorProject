@@ -12,6 +12,7 @@ import Challenges from './features/challenges';
 import Proof, { AdminReviewPage } from './features/proof';
 import Streak from './features/streak';
 import Coupons from './features/coupons';
+import RewardsPage from './features/rewards';
 import BottomNav from './components/BottomNav';
 
 function AppShell() {
@@ -50,6 +51,7 @@ export default function App() {
             <Route index element={<Home />} />
             <Route path="activities" element={<Activities />} />
             <Route path="apps" element={<Apps />} />
+            <Route path="rewards" element={<RewardsPage />} />
             <Route path="leaderboard" element={<Leaderboard />} />
             <Route path="profile" element={<Profile />} />
             <Route path="challenges" element={<Challenges />} />

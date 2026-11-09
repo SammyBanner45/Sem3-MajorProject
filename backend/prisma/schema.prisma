@@ -53,6 +53,7 @@ model Profile {
   // Member 1 relations
   user           User         @relation(fields: [id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userCoupons    UserCoupon[]
+  redemptions    Redemption[]
 
   // Member 2 relations
   submissions    Submission[]
@@ -189,6 +190,9 @@ model Co2Log {
   type       Co2LogType
   status     Co2LogStatus
   co2Kg      Float
+  savedKg    Float        @default(0)
+  pointsEarned Float      @default(0)
+  chosenVehicle String?
   distanceKm Float?
   details    Json
   createdAt  DateTime     @default(now())
@@ -198,4 +202,48 @@ model Co2Log {
 
   @@index([userId])
   @@map("co2_logs")
+}
+
+enum RewardKind {
+  voucher
+  physical
+  donation
+}
+
+enum RedemptionStatus {
+  active
+  used
+  expired
+}
+
+model Reward {
+  id          String       @id @default(uuid()) @db.Uuid
+  brand       String
+  title       String
+  description String
+  kind        RewardKind
+  cost        Float
+  stock       Int
+  validDays   Int
+  terms       String
+  icon        String
+  isActive    Boolean      @default(true)
+  redemptions Redemption[]
+}
+
+model Redemption {
+  id        String           @id @default(uuid()) @db.Uuid
+  userId    String           @db.Uuid
+  rewardId  String           @db.Uuid
+  cost      Float
+  code      String           @unique
+  status    RedemptionStatus @default(active)
+  expiresAt DateTime
+  createdAt DateTime         @default(now())
+
+  profile Profile @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  reward  Reward  @relation(fields: [rewardId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@index([userId])
+  @@index([rewardId])
 }

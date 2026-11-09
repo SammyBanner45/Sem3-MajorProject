@@ -1,13 +1,13 @@
 {
   "travel": {
-    "auto": { "unit": "kg CO2e/km", "value": 0.192, "source": "verify" },
-    "bike": { "unit": "kg CO2e/km", "value": 0, "source": "direct tailpipe emissions; verify lifecycle accounting" },
-    "cab": { "unit": "kg CO2e/km", "value": 0.192, "source": "verify" },
-    "bus": { "unit": "kg CO2e/km", "value": 0.089, "source": "verify" },
-    "car": { "unit": "kg CO2e/km", "value": 0.192, "source": "verify" },
-    "train": { "unit": "kg CO2e/km", "value": 0.041, "source": "verify" },
-    "metro": { "unit": "kg CO2e/km", "value": 0.035, "source": "verify" },
-    "walk": { "unit": "kg CO2e/km", "value": 0, "source": "direct emissions" }
+    "walk": { "unit": "kg CO2e/passenger-km", "value": 0, "source": "direct emissions; verify lifecycle accounting" },
+    "bicycle": { "unit": "kg CO2e/passenger-km", "value": 0, "source": "direct emissions; verify lifecycle accounting" },
+    "motorbike": { "unit": "kg CO2e/passenger-km", "value": 0.103, "source": "verify: average petrol two-wheeler estimate" },
+    "auto_rickshaw": { "unit": "kg CO2e/passenger-km", "value": 0.075, "source": "verify: average shared auto estimate" },
+    "cab_petrol": { "unit": "kg CO2e/passenger-km", "value": 0.192, "source": "verify: average petrol car per-passenger estimate" },
+    "cab_ev": { "unit": "kg CO2e/passenger-km", "value": 0.050, "source": "verify: average grid-powered EV estimate" },
+    "bus": { "unit": "kg CO2e/passenger-km", "value": 0.089, "source": "verify: average urban bus per-passenger estimate" },
+    "metro": { "unit": "kg CO2e/passenger-km", "value": 0.035, "source": "verify: average electric metro estimate" }
   },
   "food": {
     "vegItem": { "unit": "kg CO2e/item", "value": 0.7, "source": "verify" },

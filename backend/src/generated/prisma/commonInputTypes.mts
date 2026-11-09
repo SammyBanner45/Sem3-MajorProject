@@ -453,6 +453,40 @@ export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
   _max?: Prisma.NestedJsonFilter<$PrismaModel>
 }
 
+export type EnumRewardKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.RewardKind | Prisma.EnumRewardKindFieldRefInput<$PrismaModel>
+  in?: $Enums.RewardKind[] | Prisma.ListEnumRewardKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RewardKind[] | Prisma.ListEnumRewardKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRewardKindFilter<$PrismaModel> | $Enums.RewardKind
+}
+
+export type EnumRewardKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RewardKind | Prisma.EnumRewardKindFieldRefInput<$PrismaModel>
+  in?: $Enums.RewardKind[] | Prisma.ListEnumRewardKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RewardKind[] | Prisma.ListEnumRewardKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRewardKindWithAggregatesFilter<$PrismaModel> | $Enums.RewardKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRewardKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRewardKindFilter<$PrismaModel>
+}
+
+export type EnumRedemptionStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.RedemptionStatus | Prisma.EnumRedemptionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RedemptionStatus[] | Prisma.ListEnumRedemptionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RedemptionStatus[] | Prisma.ListEnumRedemptionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRedemptionStatusFilter<$PrismaModel> | $Enums.RedemptionStatus
+}
+
+export type EnumRedemptionStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RedemptionStatus | Prisma.EnumRedemptionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RedemptionStatus[] | Prisma.ListEnumRedemptionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RedemptionStatus[] | Prisma.ListEnumRedemptionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRedemptionStatusWithAggregatesFilter<$PrismaModel> | $Enums.RedemptionStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRedemptionStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRedemptionStatusFilter<$PrismaModel>
+}
+
 export type NestedUuidFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -861,6 +895,40 @@ export type NestedJsonFilterBase<$PrismaModel = never> = {
   gt?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
   gte?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel>
   not?: runtime.InputJsonValue | Prisma.JsonFieldRefInput<$PrismaModel> | Prisma.JsonNullValueFilter
+}
+
+export type NestedEnumRewardKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.RewardKind | Prisma.EnumRewardKindFieldRefInput<$PrismaModel>
+  in?: $Enums.RewardKind[] | Prisma.ListEnumRewardKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RewardKind[] | Prisma.ListEnumRewardKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRewardKindFilter<$PrismaModel> | $Enums.RewardKind
+}
+
+export type NestedEnumRewardKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RewardKind | Prisma.EnumRewardKindFieldRefInput<$PrismaModel>
+  in?: $Enums.RewardKind[] | Prisma.ListEnumRewardKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RewardKind[] | Prisma.ListEnumRewardKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRewardKindWithAggregatesFilter<$PrismaModel> | $Enums.RewardKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRewardKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRewardKindFilter<$PrismaModel>
+}
+
+export type NestedEnumRedemptionStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.RedemptionStatus | Prisma.EnumRedemptionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RedemptionStatus[] | Prisma.ListEnumRedemptionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RedemptionStatus[] | Prisma.ListEnumRedemptionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRedemptionStatusFilter<$PrismaModel> | $Enums.RedemptionStatus
+}
+
+export type NestedEnumRedemptionStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.RedemptionStatus | Prisma.EnumRedemptionStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.RedemptionStatus[] | Prisma.ListEnumRedemptionStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.RedemptionStatus[] | Prisma.ListEnumRedemptionStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumRedemptionStatusWithAggregatesFilter<$PrismaModel> | $Enums.RedemptionStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumRedemptionStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumRedemptionStatusFilter<$PrismaModel>
 }
 
 

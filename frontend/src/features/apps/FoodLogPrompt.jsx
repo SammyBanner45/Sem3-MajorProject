@@ -11,6 +11,7 @@ export default function FoodLogPrompt({ pendingLog, onClose, onLogged }) {
   const [items, setItems] = useState(details.items ?? 1);
   const [deliveryKm, setDeliveryKm] = useState(details.deliveryKm ?? 0);
   const [packaging, setPackaging] = useState(details.packaging ?? false);
+  const [nudges, setNudges] = useState(Array.isArray(details.nudges) ? details.nudges : []);
   const [saving, setSaving] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
@@ -22,6 +23,7 @@ export default function FoodLogPrompt({ pendingLog, onClose, onLogged }) {
     setItems(nextDetails.items ?? 1);
     setDeliveryKm(nextDetails.deliveryKm ?? 0);
     setPackaging(nextDetails.packaging ?? false);
+    setNudges(Array.isArray(nextDetails.nudges) ? nextDetails.nudges : []);
     setResult(null);
     setError('');
     setDismissed(false);
@@ -45,8 +47,8 @@ export default function FoodLogPrompt({ pendingLog, onClose, onLogged }) {
     setSaving(true);
     setError('');
     try {
-      const logged = await co2Api.logFood(pendingLog.id, { items: itemCount, isVeg, deliveryKm: distance, packaging });
-      setResult(logged?.co2Kg);
+      const logged = await co2Api.logFood(pendingLog.id, { items: itemCount, isVeg, deliveryKm: distance, packaging, nudges });
+      setResult({ co2Kg: logged?.log?.co2Kg ?? logged?.co2Kg ?? 0, pointsEarned: logged?.pointsEarned ?? 0, capReached: logged?.capReached });
       onLogged?.(logged);
     } catch (requestError) {
       setError(requestError.message || 'Could not log this order.');
@@ -68,7 +70,7 @@ export default function FoodLogPrompt({ pendingLog, onClose, onLogged }) {
           {error && <p className="mt-3 text-sm text-red-600" role="alert">{error}</p>}
           <div className="mt-5 flex gap-3"><button type="button" onClick={dismiss} className="min-h-12 flex-1 rounded-xl border border-slate-200 px-4 font-semibold text-slate-700">Not now</button><button type="submit" disabled={saving} className="min-h-12 flex-1 rounded-xl bg-emerald-600 px-4 font-semibold text-white disabled:opacity-50">{saving ? 'Saving…' : 'Log order'}</button></div>
           <button type="button" onClick={dismiss} className="mt-3 min-h-11 w-full text-sm font-semibold text-slate-500">Skip</button>
-        </> : <div className="mt-6 rounded-2xl bg-emerald-50 p-5 text-center"><p className="text-sm font-medium text-emerald-700">Saved to your CO₂ log</p><p className="mt-2 text-3xl font-bold text-slate-900">{Number(result).toFixed(2)} kg</p><p className="text-sm text-slate-600">estimated CO₂e</p><button type="button" onClick={dismiss} className="mt-5 min-h-12 w-full rounded-xl bg-emerald-600 px-4 font-semibold text-white">Done</button></div>}
+        </> : <div className="mt-6"><p className="text-sm font-medium text-emerald-700">Saved to your CO₂ log</p><div className="mt-3 grid grid-cols-2 gap-3"><div className="rounded-2xl bg-slate-100 p-4"><p className="text-2xl font-bold text-slate-700">{Number(result.co2Kg).toFixed(2)} kg</p><p className="text-xs text-slate-500">CO₂e emitted</p></div><div className="rounded-2xl bg-emerald-50 p-4"><p className="text-2xl font-bold text-emerald-700">+{Number(result.pointsEarned).toFixed(2)} pts</p><p className="text-xs text-emerald-700">CO₂e saved</p></div></div>{result.capReached && <p className="mt-3 text-xs text-slate-500">Daily limit reached.</p>}<button type="button" onClick={dismiss} className="mt-5 min-h-12 w-full rounded-xl bg-emerald-600 px-4 font-semibold text-white">Done</button></div>}
       </form>
     </div>
   );

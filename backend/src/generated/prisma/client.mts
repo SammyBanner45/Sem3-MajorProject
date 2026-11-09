@@ -81,3 +81,13 @@ export type UserApp = Prisma.UserAppModel
  * 
  */
 export type Co2Log = Prisma.Co2LogModel
+/**
+ * Model Reward
+ * 
+ */
+export type Reward = Prisma.RewardModel
+/**
+ * Model Redemption
+ * 
+ */
+export type Redemption = Prisma.RedemptionModel

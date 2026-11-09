@@ -1,0 +1,13 @@
+import { useEffect, useState } from 'react';
+import { pointsApi } from './api';
+
+export default function MonthBars() {
+  const [summary, setSummary] = useState(null);
+  const [error, setError] = useState('');
+  const load = () => { setError(''); pointsApi.summary().then(setSummary).catch((requestError) => setError(requestError.message)); };
+  useEffect(load, []);
+  if (error) return <section className="rounded-[20px] border border-[#1f2a26] bg-[#151b19] p-4 text-sm text-[#9ca3af]">Could not load month data. <button type="button" onClick={load} className="underline">Retry</button></section>;
+  if (!summary) return <div className="h-48 animate-pulse rounded-[20px] bg-[#151b19]" />;
+  const saved = Number(summary.monthEarned || 0); const emitted = Number(summary.monthEmittedKg || 0); const max = Math.max(Number(summary.monthTarget || 30), saved, emitted, 1); const percent = Math.min(100, Math.round((saved / Number(summary.monthTarget || 30)) * 100));
+  return <section className="rounded-[20px] border border-[#1f2a26] bg-[#151b19] p-4 text-white"><div className="flex items-center justify-between"><h2 className="text-xl font-bold">Your month</h2><span className="rounded-full border-[1.5px] border-[#86efac] px-3 py-1 text-xs text-[#86efac]">{new Intl.DateTimeFormat('en', { month: 'short' }).format(new Date())}</span></div><p className="mt-1 text-xs text-[#9ca3af]">Target: earn {summary.monthTarget || 30} pts</p><div className="mx-auto mt-5 w-fit rounded-full border-[1.5px] border-[#86efac] px-8 py-3 text-center"><span className="block text-xs text-[#9ca3af]">You saved</span><strong className="block text-4xl text-[#86efac]">{saved.toFixed(2)}</strong><span className="text-xs text-[#86efac]">kg CO2e</span></div><div className="mt-5 space-y-3 text-xs"><div><div className="mb-1 flex justify-between"><span className="text-[#86efac]">Saved</span><span>{saved.toFixed(2)} kg CO2e</span></div><div className="h-2 rounded-full bg-[#26332e]"><div className="h-full rounded-full bg-[#86efac]" style={{ width: `${(saved / max) * 100}%` }} /></div></div><div><div className="mb-1 flex justify-between"><span className="text-[#9ca3af]">Emitted</span><span>{emitted.toFixed(2)} kg CO2e</span></div><div className="h-2 rounded-full bg-[#26332e]"><div className="h-full rounded-full bg-[#9ca3af]" style={{ width: `${(emitted / max) * 100}%` }} /></div></div></div><p className="mt-4 text-sm text-[#86efac]">You're {percent}% of the way to this month's target</p><p className="mt-2 text-xs text-[#9ca3af]">Emitted covers the trips and orders you log, not your whole footprint.</p></section>;
+}

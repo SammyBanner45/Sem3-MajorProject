@@ -39,6 +39,9 @@ const prisma = new Proxy({}, {
     if (property === '$disconnect') {
       return (...args) => getPrismaClient().then((client) => client.$disconnect(...args));
     }
+    if (property === '$transaction') {
+      return (...args) => getPrismaClient().then((client) => client.$transaction(...args));
+    }
     return createDelegateProxy(property);
   },
 });
