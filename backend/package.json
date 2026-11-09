@@ -6,10 +6,13 @@
   "scripts": {
     "dev": "node src/index.js",
     "start": "node src/index.js",
+    "test": "node --test src/services/co2Calculator.test.js",
     "prisma": "prisma",
     "prisma:generate": "prisma generate",
     "prisma:validate": "prisma validate",
     "prisma:migrate:init": "prisma migrate dev --name init",
+    "db:migrate": "prisma migrate dev",
+    "db:seed": "node prisma/seed.js",
     "seed:users": "node prisma/seed.users.js"
   },
   "dependencies": {
@@ -20,8 +23,8 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.3",
-    "pg": "^8.23.1",
-    "multer": "^2.5.0"
+    "multer": "^2.5.0",
+    "pg": "^8.23.1"
   },
   "devDependencies": {
     "prisma": "7.10.1"

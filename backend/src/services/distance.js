@@ -1,6 +1,6 @@
 const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search';
 const OSRM_URL = 'https://router.project-osrm.org/route/v1/driving';
-const USER_AGENT = 'EcoSync/1.0 (contact: ecosync@example.com)';
+const USER_AGENT = 'EcoSync-MajorProject/1.0 (contact: sambuddha.banerjee45@gmail.com)';
 
 let requestChain = Promise.resolve();
 let lastNominatimRequestAt = 0;
