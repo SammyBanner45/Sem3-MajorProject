@@ -1,6 +1,7 @@
 const factors = require('../../../frontend/src/data/emissionFactors.json');
 const prisma = require('../lib/prisma');
-const { calculateFood, calculateTravel } = require('../services/co2Calculator');
+const { calculateFood, calculateSavings, calculateTravel } = require('../services/co2Calculator');
+const { awardWithinDailyCap, canAddTravelLog, foodPoints, isDuplicateTrip, kolkataDayBounds } = require('../services/co2Rules');
 const { getDistance } = require('../services/distance');
 
 const vehicles = Object.keys(factors.travel);
@@ -19,7 +20,7 @@ function requireBoolean(value, name) {
 function validateTravel(body) {
   const origin = requireString(body?.origin, 'origin');
   const destination = requireString(body?.destination, 'destination');
-  const selectedVehicle = body?.vehicle;
+  const selectedVehicle = body?.chosenVehicle || body?.vehicle;
   if (selectedVehicle !== undefined && !vehicles.includes(selectedVehicle)) throw new TypeError('Invalid vehicle');
   return { origin, destination, vehicle: selectedVehicle };
 }
@@ -39,13 +40,25 @@ async function saveTravel(req, res, next) {
   try {
     const result = await resolveTravel(req.body);
     if (!result.vehicle) throw new TypeError('vehicle is required');
-    const co2Kg = result.emissions[result.vehicle];
+    const savings = calculateSavings(result.vehicle, result.distanceKm);
+    const { start, end } = kolkataDayBounds();
+    const [todayLogs, recentTrips] = await Promise.all([
+      prisma.co2Log.findMany({ where: { userId: req.user.id, status: 'logged', createdAt: { gte: start, lt: end } }, select: { type: true, pointsEarned: true } }),
+      prisma.co2Log.findMany({ where: { userId: req.user.id, type: 'travel', status: 'logged', createdAt: { gte: new Date(Date.now() - 3 * 60 * 60 * 1000) } }, select: { details: true } })
+    ]);
+    const duplicate = isDuplicateTrip(recentTrips, { origin: result.origin, destination: result.destination, chosenVehicle: result.vehicle });
+    if (duplicate) return res.status(409).json({ error: { code: 'DUPLICATE_TRIP', message: 'This trip was already logged within the last 3 hours.' } });
+    if (!canAddTravelLog(todayLogs.filter((log) => log.type === 'travel').length)) {
+      return res.status(409).json({ error: { code: 'TRAVEL_LOG_LIMIT', message: 'You can log at most 10 travel trips per day.' } });
+    }
+    const earnedToday = todayLogs.reduce((total, log) => total + log.pointsEarned, 0);
+    const award = awardWithinDailyCap(savings.points, earnedToday);
     const log = await prisma.co2Log.create({ data: {
-      userId: req.user.id, type: 'travel', status: 'logged', co2Kg, distanceKm: result.distanceKm,
-      details: { origin: result.origin, destination: result.destination, vehicle: result.vehicle, approximate: result.approximate },
+      userId: req.user.id, type: 'travel', status: 'logged', co2Kg: savings.co2Kg, savedKg: savings.savedKg, pointsEarned: award.pointsEarned, chosenVehicle: result.vehicle, distanceKm: result.distanceKm,
+      details: { origin: result.origin, destination: result.destination, vehicle: result.vehicle, chosenVehicle: result.vehicle, baselineKg: savings.baselineKg, approximate: result.approximate },
       loggedAt: new Date()
     } });
-    return res.status(201).json({ ...log, emissions: { [result.vehicle]: co2Kg }, approximate: result.approximate });
+    return res.status(201).json({ log, pointsEarned: award.pointsEarned, capReached: award.capReached, ...(award.capReached ? { reason: 'Daily limit reached (5 pts)' } : {}), emissions: { [result.vehicle]: savings.co2Kg }, approximate: result.approximate });
   } catch (error) { return next(error); }
 }
 
@@ -57,7 +70,9 @@ function validateFood(body) {
   const deliveryKm = body?.deliveryKm === undefined ? 0 : body.deliveryKm;
   if (typeof deliveryKm !== 'number' || !Number.isFinite(deliveryKm) || deliveryKm < 0) throw new TypeError('deliveryKm must be non-negative');
   const packaging = body?.packaging === undefined ? false : requireBoolean(body.packaging, 'packaging');
-  return { items, isVeg, deliveryKm, packaging };
+  const nudges = body?.nudges === undefined ? [] : body.nudges;
+  if (!Array.isArray(nudges) || nudges.some((nudge) => typeof nudge !== 'string')) throw new TypeError('nudges must be an array of strings');
+  return { items, isVeg, deliveryKm, packaging, nudges };
 }
 
 async function createPendingFood(req, res, next) {
@@ -76,11 +91,15 @@ async function logFood(req, res, next) {
     if (!uuidPattern.test(req.params.id || '')) return res.status(400).json({ error: 'Log id must be a UUID' });
     const food = validateFood(req.body);
     const co2Kg = calculateFood(food);
+    const requestedPoints = foodPoints(food.isVeg, food.nudges);
+    const { start, end } = kolkataDayBounds();
+    const todayLogs = await prisma.co2Log.findMany({ where: { userId: req.user.id, status: 'logged', createdAt: { gte: start, lt: end } }, select: { pointsEarned: true } });
+    const award = awardWithinDailyCap(requestedPoints, todayLogs.reduce((total, log) => total + log.pointsEarned, 0));
     const result = await prisma.co2Log.updateMany({ where: { id: req.params.id, userId: req.user.id, type: 'food', status: 'pending_log' }, data: {
-      status: 'logged', co2Kg, details: food, loggedAt: new Date()
+      status: 'logged', co2Kg, savedKg: award.pointsEarned, pointsEarned: award.pointsEarned, details: food, loggedAt: new Date()
     } });
     if (!result.count) return res.status(404).json({ error: 'Pending food log not found' });
-    return res.json(await prisma.co2Log.findFirst({ where: { id: req.params.id, userId: req.user.id } }));
+    return res.json({ log: await prisma.co2Log.findFirst({ where: { id: req.params.id, userId: req.user.id } }), pointsEarned: award.pointsEarned, capReached: award.capReached, ...(award.capReached ? { reason: 'Daily limit reached (5 pts)' } : {}) });
   } catch (error) { return next(error); }
 }
 

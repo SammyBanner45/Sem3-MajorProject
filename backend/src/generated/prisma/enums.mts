@@ -65,3 +65,21 @@ export const Co2LogStatus = {
 } as const
 
 export type Co2LogStatus = (typeof Co2LogStatus)[keyof typeof Co2LogStatus]
+
+
+export const RewardKind = {
+  voucher: 'voucher',
+  physical: 'physical',
+  donation: 'donation'
+} as const
+
+export type RewardKind = (typeof RewardKind)[keyof typeof RewardKind]
+
+
+export const RedemptionStatus = {
+  active: 'active',
+  used: 'used',
+  expired: 'expired'
+} as const
+
+export type RedemptionStatus = (typeof RedemptionStatus)[keyof typeof RedemptionStatus]

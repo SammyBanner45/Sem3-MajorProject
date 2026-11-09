@@ -250,6 +250,7 @@ export type ProfileWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   userCoupons?: Prisma.UserCouponListRelationFilter
+  redemptions?: Prisma.RedemptionListRelationFilter
   submissions?: Prisma.SubmissionListRelationFilter
   userApps?: Prisma.UserAppListRelationFilter
   co2Logs?: Prisma.Co2LogListRelationFilter
@@ -267,6 +268,7 @@ export type ProfileOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   userCoupons?: Prisma.UserCouponOrderByRelationAggregateInput
+  redemptions?: Prisma.RedemptionOrderByRelationAggregateInput
   submissions?: Prisma.SubmissionOrderByRelationAggregateInput
   userApps?: Prisma.UserAppOrderByRelationAggregateInput
   co2Logs?: Prisma.Co2LogOrderByRelationAggregateInput
@@ -287,6 +289,7 @@ export type ProfileWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Profile"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   userCoupons?: Prisma.UserCouponListRelationFilter
+  redemptions?: Prisma.RedemptionListRelationFilter
   submissions?: Prisma.SubmissionListRelationFilter
   userApps?: Prisma.UserAppListRelationFilter
   co2Logs?: Prisma.Co2LogListRelationFilter
@@ -335,6 +338,7 @@ export type ProfileCreateInput = {
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutProfileInput
   userCoupons?: Prisma.UserCouponCreateNestedManyWithoutProfileInput
+  redemptions?: Prisma.RedemptionCreateNestedManyWithoutProfileInput
   submissions?: Prisma.SubmissionCreateNestedManyWithoutProfileInput
   userApps?: Prisma.UserAppCreateNestedManyWithoutProfileInput
   co2Logs?: Prisma.Co2LogCreateNestedManyWithoutProfileInput
@@ -351,6 +355,7 @@ export type ProfileUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   userCoupons?: Prisma.UserCouponUncheckedCreateNestedManyWithoutProfileInput
+  redemptions?: Prisma.RedemptionUncheckedCreateNestedManyWithoutProfileInput
   submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutProfileInput
   userApps?: Prisma.UserAppUncheckedCreateNestedManyWithoutProfileInput
   co2Logs?: Prisma.Co2LogUncheckedCreateNestedManyWithoutProfileInput
@@ -367,6 +372,7 @@ export type ProfileUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
   userCoupons?: Prisma.UserCouponUpdateManyWithoutProfileNestedInput
+  redemptions?: Prisma.RedemptionUpdateManyWithoutProfileNestedInput
   submissions?: Prisma.SubmissionUpdateManyWithoutProfileNestedInput
   userApps?: Prisma.UserAppUpdateManyWithoutProfileNestedInput
   co2Logs?: Prisma.Co2LogUpdateManyWithoutProfileNestedInput
@@ -383,6 +389,7 @@ export type ProfileUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userCoupons?: Prisma.UserCouponUncheckedUpdateManyWithoutProfileNestedInput
+  redemptions?: Prisma.RedemptionUncheckedUpdateManyWithoutProfileNestedInput
   submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutProfileNestedInput
   userApps?: Prisma.UserAppUncheckedUpdateManyWithoutProfileNestedInput
   co2Logs?: Prisma.Co2LogUncheckedUpdateManyWithoutProfileNestedInput
@@ -585,6 +592,20 @@ export type ProfileUpdateOneRequiredWithoutCo2LogsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutCo2LogsInput, Prisma.ProfileUpdateWithoutCo2LogsInput>, Prisma.ProfileUncheckedUpdateWithoutCo2LogsInput>
 }
 
+export type ProfileCreateNestedOneWithoutRedemptionsInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutRedemptionsInput, Prisma.ProfileUncheckedCreateWithoutRedemptionsInput>
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutRedemptionsInput
+  connect?: Prisma.ProfileWhereUniqueInput
+}
+
+export type ProfileUpdateOneRequiredWithoutRedemptionsNestedInput = {
+  create?: Prisma.XOR<Prisma.ProfileCreateWithoutRedemptionsInput, Prisma.ProfileUncheckedCreateWithoutRedemptionsInput>
+  connectOrCreate?: Prisma.ProfileCreateOrConnectWithoutRedemptionsInput
+  upsert?: Prisma.ProfileUpsertWithoutRedemptionsInput
+  connect?: Prisma.ProfileWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProfileUpdateToOneWithWhereWithoutRedemptionsInput, Prisma.ProfileUpdateWithoutRedemptionsInput>, Prisma.ProfileUncheckedUpdateWithoutRedemptionsInput>
+}
+
 export type ProfileCreateWithoutUserInput = {
   email?: string | null
   passwordHash?: string | null
@@ -595,6 +616,7 @@ export type ProfileCreateWithoutUserInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   userCoupons?: Prisma.UserCouponCreateNestedManyWithoutProfileInput
+  redemptions?: Prisma.RedemptionCreateNestedManyWithoutProfileInput
   submissions?: Prisma.SubmissionCreateNestedManyWithoutProfileInput
   userApps?: Prisma.UserAppCreateNestedManyWithoutProfileInput
   co2Logs?: Prisma.Co2LogCreateNestedManyWithoutProfileInput
@@ -610,6 +632,7 @@ export type ProfileUncheckedCreateWithoutUserInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   userCoupons?: Prisma.UserCouponUncheckedCreateNestedManyWithoutProfileInput
+  redemptions?: Prisma.RedemptionUncheckedCreateNestedManyWithoutProfileInput
   submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutProfileInput
   userApps?: Prisma.UserAppUncheckedCreateNestedManyWithoutProfileInput
   co2Logs?: Prisma.Co2LogUncheckedCreateNestedManyWithoutProfileInput
@@ -641,6 +664,7 @@ export type ProfileUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userCoupons?: Prisma.UserCouponUpdateManyWithoutProfileNestedInput
+  redemptions?: Prisma.RedemptionUpdateManyWithoutProfileNestedInput
   submissions?: Prisma.SubmissionUpdateManyWithoutProfileNestedInput
   userApps?: Prisma.UserAppUpdateManyWithoutProfileNestedInput
   co2Logs?: Prisma.Co2LogUpdateManyWithoutProfileNestedInput
@@ -656,6 +680,7 @@ export type ProfileUncheckedUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userCoupons?: Prisma.UserCouponUncheckedUpdateManyWithoutProfileNestedInput
+  redemptions?: Prisma.RedemptionUncheckedUpdateManyWithoutProfileNestedInput
   submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutProfileNestedInput
   userApps?: Prisma.UserAppUncheckedUpdateManyWithoutProfileNestedInput
   co2Logs?: Prisma.Co2LogUncheckedUpdateManyWithoutProfileNestedInput
@@ -671,6 +696,7 @@ export type ProfileCreateWithoutUserCouponsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutProfileInput
+  redemptions?: Prisma.RedemptionCreateNestedManyWithoutProfileInput
   submissions?: Prisma.SubmissionCreateNestedManyWithoutProfileInput
   userApps?: Prisma.UserAppCreateNestedManyWithoutProfileInput
   co2Logs?: Prisma.Co2LogCreateNestedManyWithoutProfileInput
@@ -686,6 +712,7 @@ export type ProfileUncheckedCreateWithoutUserCouponsInput = {
   lastStreakDate?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  redemptions?: Prisma.RedemptionUncheckedCreateNestedManyWithoutProfileInput
   submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutProfileInput
   userApps?: Prisma.UserAppUncheckedCreateNestedManyWithoutProfileInput
   co2Logs?: Prisma.Co2LogUncheckedCreateNestedManyWithoutProfileInput
@@ -717,6 +744,7 @@ export type ProfileUpdateWithoutUserCouponsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
+  redemptions?: Prisma.RedemptionUpdateManyWithoutProfileNestedInput
   submissions?: Prisma.SubmissionUpdateManyWithoutProfileNestedInput
   userApps?: Prisma.UserAppUpdateManyWithoutProfileNestedInput
   co2Logs?: Prisma.Co2LogUpdateManyWithoutProfileNestedInput
@@ -732,6 +760,7 @@ export type ProfileUncheckedUpdateWithoutUserCouponsInput = {
   lastStreakDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  redemptions?: Prisma.RedemptionUncheckedUpdateManyWithoutProfileNestedInput
   submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutProfileNestedInput
   userApps?: Prisma.UserAppUncheckedUpdateManyWithoutProfileNestedInput
   co2Logs?: Prisma.Co2LogUncheckedUpdateManyWithoutProfileNestedInput
@@ -748,6 +777,7 @@ export type ProfileCreateWithoutSubmissionsInput = {
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutProfileInput
   userCoupons?: Prisma.UserCouponCreateNestedManyWithoutProfileInput
+  redemptions?: Prisma.RedemptionCreateNestedManyWithoutProfileInput
   userApps?: Prisma.UserAppCreateNestedManyWithoutProfileInput
   co2Logs?: Prisma.Co2LogCreateNestedManyWithoutProfileInput
 }
@@ -763,6 +793,7 @@ export type ProfileUncheckedCreateWithoutSubmissionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   userCoupons?: Prisma.UserCouponUncheckedCreateNestedManyWithoutProfileInput
+  redemptions?: Prisma.RedemptionUncheckedCreateNestedManyWithoutProfileInput
   userApps?: Prisma.UserAppUncheckedCreateNestedManyWithoutProfileInput
   co2Logs?: Prisma.Co2LogUncheckedCreateNestedManyWithoutProfileInput
 }
@@ -794,6 +825,7 @@ export type ProfileUpdateWithoutSubmissionsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
   userCoupons?: Prisma.UserCouponUpdateManyWithoutProfileNestedInput
+  redemptions?: Prisma.RedemptionUpdateManyWithoutProfileNestedInput
   userApps?: Prisma.UserAppUpdateManyWithoutProfileNestedInput
   co2Logs?: Prisma.Co2LogUpdateManyWithoutProfileNestedInput
 }
@@ -809,6 +841,7 @@ export type ProfileUncheckedUpdateWithoutSubmissionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userCoupons?: Prisma.UserCouponUncheckedUpdateManyWithoutProfileNestedInput
+  redemptions?: Prisma.RedemptionUncheckedUpdateManyWithoutProfileNestedInput
   userApps?: Prisma.UserAppUncheckedUpdateManyWithoutProfileNestedInput
   co2Logs?: Prisma.Co2LogUncheckedUpdateManyWithoutProfileNestedInput
 }
@@ -824,6 +857,7 @@ export type ProfileCreateWithoutUserAppsInput = {
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutProfileInput
   userCoupons?: Prisma.UserCouponCreateNestedManyWithoutProfileInput
+  redemptions?: Prisma.RedemptionCreateNestedManyWithoutProfileInput
   submissions?: Prisma.SubmissionCreateNestedManyWithoutProfileInput
   co2Logs?: Prisma.Co2LogCreateNestedManyWithoutProfileInput
 }
@@ -839,6 +873,7 @@ export type ProfileUncheckedCreateWithoutUserAppsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   userCoupons?: Prisma.UserCouponUncheckedCreateNestedManyWithoutProfileInput
+  redemptions?: Prisma.RedemptionUncheckedCreateNestedManyWithoutProfileInput
   submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutProfileInput
   co2Logs?: Prisma.Co2LogUncheckedCreateNestedManyWithoutProfileInput
 }
@@ -870,6 +905,7 @@ export type ProfileUpdateWithoutUserAppsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
   userCoupons?: Prisma.UserCouponUpdateManyWithoutProfileNestedInput
+  redemptions?: Prisma.RedemptionUpdateManyWithoutProfileNestedInput
   submissions?: Prisma.SubmissionUpdateManyWithoutProfileNestedInput
   co2Logs?: Prisma.Co2LogUpdateManyWithoutProfileNestedInput
 }
@@ -885,6 +921,7 @@ export type ProfileUncheckedUpdateWithoutUserAppsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userCoupons?: Prisma.UserCouponUncheckedUpdateManyWithoutProfileNestedInput
+  redemptions?: Prisma.RedemptionUncheckedUpdateManyWithoutProfileNestedInput
   submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutProfileNestedInput
   co2Logs?: Prisma.Co2LogUncheckedUpdateManyWithoutProfileNestedInput
 }
@@ -900,6 +937,7 @@ export type ProfileCreateWithoutCo2LogsInput = {
   updatedAt?: Date | string
   user?: Prisma.UserCreateNestedOneWithoutProfileInput
   userCoupons?: Prisma.UserCouponCreateNestedManyWithoutProfileInput
+  redemptions?: Prisma.RedemptionCreateNestedManyWithoutProfileInput
   submissions?: Prisma.SubmissionCreateNestedManyWithoutProfileInput
   userApps?: Prisma.UserAppCreateNestedManyWithoutProfileInput
 }
@@ -915,6 +953,7 @@ export type ProfileUncheckedCreateWithoutCo2LogsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   userCoupons?: Prisma.UserCouponUncheckedCreateNestedManyWithoutProfileInput
+  redemptions?: Prisma.RedemptionUncheckedCreateNestedManyWithoutProfileInput
   submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutProfileInput
   userApps?: Prisma.UserAppUncheckedCreateNestedManyWithoutProfileInput
 }
@@ -946,6 +985,7 @@ export type ProfileUpdateWithoutCo2LogsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
   userCoupons?: Prisma.UserCouponUpdateManyWithoutProfileNestedInput
+  redemptions?: Prisma.RedemptionUpdateManyWithoutProfileNestedInput
   submissions?: Prisma.SubmissionUpdateManyWithoutProfileNestedInput
   userApps?: Prisma.UserAppUpdateManyWithoutProfileNestedInput
 }
@@ -961,8 +1001,89 @@ export type ProfileUncheckedUpdateWithoutCo2LogsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userCoupons?: Prisma.UserCouponUncheckedUpdateManyWithoutProfileNestedInput
+  redemptions?: Prisma.RedemptionUncheckedUpdateManyWithoutProfileNestedInput
   submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutProfileNestedInput
   userApps?: Prisma.UserAppUncheckedUpdateManyWithoutProfileNestedInput
+}
+
+export type ProfileCreateWithoutRedemptionsInput = {
+  email?: string | null
+  passwordHash?: string | null
+  displayName: string
+  role?: $Enums.ProfileRole
+  currentStreak?: number
+  lastStreakDate?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user?: Prisma.UserCreateNestedOneWithoutProfileInput
+  userCoupons?: Prisma.UserCouponCreateNestedManyWithoutProfileInput
+  submissions?: Prisma.SubmissionCreateNestedManyWithoutProfileInput
+  userApps?: Prisma.UserAppCreateNestedManyWithoutProfileInput
+  co2Logs?: Prisma.Co2LogCreateNestedManyWithoutProfileInput
+}
+
+export type ProfileUncheckedCreateWithoutRedemptionsInput = {
+  id?: string
+  email?: string | null
+  passwordHash?: string | null
+  displayName: string
+  role?: $Enums.ProfileRole
+  currentStreak?: number
+  lastStreakDate?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  userCoupons?: Prisma.UserCouponUncheckedCreateNestedManyWithoutProfileInput
+  submissions?: Prisma.SubmissionUncheckedCreateNestedManyWithoutProfileInput
+  userApps?: Prisma.UserAppUncheckedCreateNestedManyWithoutProfileInput
+  co2Logs?: Prisma.Co2LogUncheckedCreateNestedManyWithoutProfileInput
+}
+
+export type ProfileCreateOrConnectWithoutRedemptionsInput = {
+  where: Prisma.ProfileWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutRedemptionsInput, Prisma.ProfileUncheckedCreateWithoutRedemptionsInput>
+}
+
+export type ProfileUpsertWithoutRedemptionsInput = {
+  update: Prisma.XOR<Prisma.ProfileUpdateWithoutRedemptionsInput, Prisma.ProfileUncheckedUpdateWithoutRedemptionsInput>
+  create: Prisma.XOR<Prisma.ProfileCreateWithoutRedemptionsInput, Prisma.ProfileUncheckedCreateWithoutRedemptionsInput>
+  where?: Prisma.ProfileWhereInput
+}
+
+export type ProfileUpdateToOneWithWhereWithoutRedemptionsInput = {
+  where?: Prisma.ProfileWhereInput
+  data: Prisma.XOR<Prisma.ProfileUpdateWithoutRedemptionsInput, Prisma.ProfileUncheckedUpdateWithoutRedemptionsInput>
+}
+
+export type ProfileUpdateWithoutRedemptionsInput = {
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumProfileRoleFieldUpdateOperationsInput | $Enums.ProfileRole
+  currentStreak?: Prisma.IntFieldUpdateOperationsInput | number
+  lastStreakDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutProfileNestedInput
+  userCoupons?: Prisma.UserCouponUpdateManyWithoutProfileNestedInput
+  submissions?: Prisma.SubmissionUpdateManyWithoutProfileNestedInput
+  userApps?: Prisma.UserAppUpdateManyWithoutProfileNestedInput
+  co2Logs?: Prisma.Co2LogUpdateManyWithoutProfileNestedInput
+}
+
+export type ProfileUncheckedUpdateWithoutRedemptionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumProfileRoleFieldUpdateOperationsInput | $Enums.ProfileRole
+  currentStreak?: Prisma.IntFieldUpdateOperationsInput | number
+  lastStreakDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userCoupons?: Prisma.UserCouponUncheckedUpdateManyWithoutProfileNestedInput
+  submissions?: Prisma.SubmissionUncheckedUpdateManyWithoutProfileNestedInput
+  userApps?: Prisma.UserAppUncheckedUpdateManyWithoutProfileNestedInput
+  co2Logs?: Prisma.Co2LogUncheckedUpdateManyWithoutProfileNestedInput
 }
 
 
@@ -972,6 +1093,7 @@ export type ProfileUncheckedUpdateWithoutCo2LogsInput = {
 
 export type ProfileCountOutputType = {
   userCoupons: number
+  redemptions: number
   submissions: number
   userApps: number
   co2Logs: number
@@ -979,6 +1101,7 @@ export type ProfileCountOutputType = {
 
 export type ProfileCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   userCoupons?: boolean | ProfileCountOutputTypeCountUserCouponsArgs
+  redemptions?: boolean | ProfileCountOutputTypeCountRedemptionsArgs
   submissions?: boolean | ProfileCountOutputTypeCountSubmissionsArgs
   userApps?: boolean | ProfileCountOutputTypeCountUserAppsArgs
   co2Logs?: boolean | ProfileCountOutputTypeCountCo2LogsArgs
@@ -999,6 +1122,13 @@ export type ProfileCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exte
  */
 export type ProfileCountOutputTypeCountUserCouponsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.UserCouponWhereInput
+}
+
+/**
+ * ProfileCountOutputType without action
+ */
+export type ProfileCountOutputTypeCountRedemptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RedemptionWhereInput
 }
 
 /**
@@ -1035,6 +1165,7 @@ export type ProfileSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   userCoupons?: boolean | Prisma.Profile$userCouponsArgs<ExtArgs>
+  redemptions?: boolean | Prisma.Profile$redemptionsArgs<ExtArgs>
   submissions?: boolean | Prisma.Profile$submissionsArgs<ExtArgs>
   userApps?: boolean | Prisma.Profile$userAppsArgs<ExtArgs>
   co2Logs?: boolean | Prisma.Profile$co2LogsArgs<ExtArgs>
@@ -1083,6 +1214,7 @@ export type ProfileOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 export type ProfileInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   userCoupons?: boolean | Prisma.Profile$userCouponsArgs<ExtArgs>
+  redemptions?: boolean | Prisma.Profile$redemptionsArgs<ExtArgs>
   submissions?: boolean | Prisma.Profile$submissionsArgs<ExtArgs>
   userApps?: boolean | Prisma.Profile$userAppsArgs<ExtArgs>
   co2Logs?: boolean | Prisma.Profile$co2LogsArgs<ExtArgs>
@@ -1100,6 +1232,7 @@ export type $ProfilePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
     userCoupons: Prisma.$UserCouponPayload<ExtArgs>[]
+    redemptions: Prisma.$RedemptionPayload<ExtArgs>[]
     submissions: Prisma.$SubmissionPayload<ExtArgs>[]
     userApps: Prisma.$UserAppPayload<ExtArgs>[]
     co2Logs: Prisma.$Co2LogPayload<ExtArgs>[]
@@ -1510,6 +1643,7 @@ export interface Prisma__ProfileClient<T, Null = never, ExtArgs extends runtime.
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   userCoupons<T extends Prisma.Profile$userCouponsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$userCouponsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserCouponPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  redemptions<T extends Prisma.Profile$redemptionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$redemptionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RedemptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   submissions<T extends Prisma.Profile$submissionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$submissionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SubmissionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   userApps<T extends Prisma.Profile$userAppsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$userAppsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserAppPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   co2Logs<T extends Prisma.Profile$co2LogsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Profile$co2LogsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$Co2LogPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1973,6 +2107,30 @@ export type Profile$userCouponsArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.UserCouponScalarFieldEnum | Prisma.UserCouponScalarFieldEnum[]
+}
+
+/**
+ * Profile.redemptions
+ */
+export type Profile$redemptionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Redemption
+   */
+  select?: Prisma.RedemptionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Redemption
+   */
+  omit?: Prisma.RedemptionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RedemptionInclude<ExtArgs> | null
+  where?: Prisma.RedemptionWhereInput
+  orderBy?: Prisma.RedemptionOrderByWithRelationInput | Prisma.RedemptionOrderByWithRelationInput[]
+  cursor?: Prisma.RedemptionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RedemptionScalarFieldEnum | Prisma.RedemptionScalarFieldEnum[]
 }
 
 /**

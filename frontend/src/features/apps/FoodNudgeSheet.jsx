@@ -18,7 +18,10 @@ export default function FoodNudgeSheet({ app, onClose, onPendingCreated }) {
         isVeg: true,
         deliveryKm: 0,
         packaging: !skipCutlery,
-        nudges: { skipDisposableCutlery: skipCutlery, combineOrder }
+        nudges: [
+          skipCutlery ? 'skip_disposable_cutlery' : null,
+          combineOrder ? 'combine_order' : null
+        ].filter(Boolean)
       });
     } catch {
       setError('Your order reminder could not be saved.');
@@ -38,8 +41,8 @@ export default function FoodNudgeSheet({ app, onClose, onPendingCreated }) {
   }
 
   return (
-    <div className="fixed inset-0 z-40 flex items-end bg-slate-950/40" role="dialog" aria-modal="true" aria-labelledby="food-nudge-title">
-      <div className="w-full rounded-t-3xl bg-white p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-end bg-slate-950/40" role="dialog" aria-modal="true" aria-labelledby="food-nudge-title">
+      <div className="w-full rounded-t-3xl bg-white p-5 pb-[calc(5rem+env(safe-area-inset-bottom))] shadow-xl">
         <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-slate-200" />
         <p className="text-sm font-medium text-emerald-700">Food footprint</p>
         <h2 id="food-nudge-title" className="mt-1 text-xl font-bold text-slate-900">Before opening {app.name}</h2>

@@ -58,7 +58,9 @@ export const ModelName = {
   Task: 'Task',
   Submission: 'Submission',
   UserApp: 'UserApp',
-  Co2Log: 'Co2Log'
+  Co2Log: 'Co2Log',
+  Reward: 'Reward',
+  Redemption: 'Redemption'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -176,6 +178,9 @@ export const Co2LogScalarFieldEnum = {
   type: 'type',
   status: 'status',
   co2Kg: 'co2Kg',
+  savedKg: 'savedKg',
+  pointsEarned: 'pointsEarned',
+  chosenVehicle: 'chosenVehicle',
   distanceKm: 'distanceKm',
   details: 'details',
   createdAt: 'createdAt',
@@ -183,6 +188,37 @@ export const Co2LogScalarFieldEnum = {
 } as const
 
 export type Co2LogScalarFieldEnum = (typeof Co2LogScalarFieldEnum)[keyof typeof Co2LogScalarFieldEnum]
+
+
+export const RewardScalarFieldEnum = {
+  id: 'id',
+  brand: 'brand',
+  title: 'title',
+  description: 'description',
+  kind: 'kind',
+  cost: 'cost',
+  stock: 'stock',
+  validDays: 'validDays',
+  terms: 'terms',
+  icon: 'icon',
+  isActive: 'isActive'
+} as const
+
+export type RewardScalarFieldEnum = (typeof RewardScalarFieldEnum)[keyof typeof RewardScalarFieldEnum]
+
+
+export const RedemptionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  rewardId: 'rewardId',
+  cost: 'cost',
+  code: 'code',
+  status: 'status',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type RedemptionScalarFieldEnum = (typeof RedemptionScalarFieldEnum)[keyof typeof RedemptionScalarFieldEnum]
 
 
 export const SortOrder = {

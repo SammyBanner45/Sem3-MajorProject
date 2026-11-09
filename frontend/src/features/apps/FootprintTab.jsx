@@ -1,0 +1,18 @@
+import { useEffect, useState } from 'react';
+import { pointsApi } from './api';
+
+export default function FootprintTab() {
+  const [mode, setMode] = useState('month'); const [summary, setSummary] = useState(null); const [history, setHistory] = useState([]); const [error, setError] = useState('');
+  const load = () => { setError(''); Promise.all([pointsApi.summary(), pointsApi.history(6)]).then(([nextSummary, nextHistory]) => { setSummary(nextSummary); setHistory(nextHistory); }).catch((requestError) => setError(requestError.message)); };
+  useEffect(() => {
+    load();
+    window.addEventListener('ecosync:points-updated', load);
+    return () => window.removeEventListener('ecosync:points-updated', load);
+  }, []);
+  if (error) return <div className="rounded-[20px] bg-[#151b19] p-4 text-sm text-[#9ca3af]">Could not load footprint. <button type="button" onClick={load} className="underline">Retry</button></div>;
+  if (!summary) return <div className="space-y-3"><div className="h-12 animate-pulse rounded-xl bg-[#151b19]" /><div className="h-48 animate-pulse rounded-[20px] bg-[#151b19]" /></div>;
+  const emitted = mode === 'month' ? summary.monthEmittedKg : summary.totalEmittedKg; const saved = mode === 'month' ? summary.monthEarned : summary.savedKg;
+  return <section className="space-y-4 rounded-[20px] bg-[#0b0f0e] text-white"><div className="grid grid-cols-2 rounded-full border-[1.5px] border-[#86efac] p-1 text-sm"><button type="button" onClick={() => setMode('month')} className={`min-h-11 rounded-full ${mode === 'month' ? 'bg-[#86efac] text-[#0b0f0e]' : 'text-[#9ca3af]'}`}>This month</button><button type="button" onClick={() => setMode('all')} className={`min-h-11 rounded-full ${mode === 'all' ? 'bg-[#86efac] text-[#0b0f0e]' : 'text-[#9ca3af]'}`}>All time</button></div><div className="grid grid-cols-2 gap-3"><Stat value={`${Number(saved || 0).toFixed(2)} kg`} label="CO2 saved" tone="text-[#86efac]" /><Stat value={`${Number(emitted || 0).toFixed(2)} kg`} label="CO2 emitted" tone="text-[#9ca3af]" /><Stat value={summary.logCount || 0} label="Trips and orders logged" /><Stat value={`${Number(summary.spent || 0).toFixed(2)} pts`} label="Points spent" tone="text-[#9ca3af]" /></div><div className="rounded-[20px] border border-[#1f2a26] bg-[#151b19] p-4"><h2 className="text-xl font-bold">Last 6 months</h2><div className="mt-4 space-y-4">{history.map((row) => <div key={row.month} className="grid grid-cols-[3rem_1fr_4rem] items-center gap-2 text-xs"><span className="text-[#9ca3af]">{row.month.slice(5)}</span><div className="space-y-1"><div className="h-2 rounded-full bg-[#26332e]"><div className="h-full rounded-full bg-[#86efac]" style={{ width: `${Math.min(100, Number(row.savedKg) * 3)}%` }} /></div><div className="h-2 rounded-full bg-[#26332e]"><div className="h-full rounded-full bg-[#9ca3af]" style={{ width: `${Math.min(100, Number(row.emittedKg) * 3)}%` }} /></div></div><span className="text-right text-[#9ca3af]">{Number(row.savedKg).toFixed(1)} / {Number(row.emittedKg).toFixed(1)}</span></div>)}</div></div><p className="text-xs text-[#9ca3af]">Saved = points earned. Values are estimates.</p></section>;
+}
+
+function Stat({ value, label, tone = 'text-white' }) { return <div className="rounded-[20px] border border-[#1f2a26] bg-[#151b19] p-3"><strong className={`block text-2xl ${tone}`}>{value}</strong><span className="mt-1 block text-xs text-[#9ca3af]">{label}</span></div>; }

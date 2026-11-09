@@ -5,6 +5,8 @@ const express = require('express');
 const cors = require('cors');
 const appsRouter = require('./routes/apps.routes');
 const co2Router = require('./routes/co2.routes');
+const pointsRouter = require('./routes/points.routes');
+const rewardsRouter = require('./routes/rewards.routes');
 const tasksRouter = require('./routes/tasks.routes');
 const submissionsRouter = require('./routes/submissions.routes');
 const adminRouter = require('./routes/admin.routes');
@@ -44,6 +46,8 @@ function createApp({ prisma }) {
 
   app.use('/api/apps', appsRouter);
   app.use('/api/co2', co2Router);
+  app.use('/api/points', pointsRouter);
+  app.use('/api/rewards', rewardsRouter);
   app.use('/api/tasks', tasksRouter);
   app.use('/api/submissions', submissionsRouter);
   app.use('/api/admin', adminRouter);

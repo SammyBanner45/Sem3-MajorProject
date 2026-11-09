@@ -11,7 +11,9 @@ app.use('/api/co2', co2Router);
 
 ## Frontend shell
 
-Register `AppLauncherPage` at `/apps` and `Co2HistoryPage` at `/apps/history`. Add an Apps entry pointing to `/apps` and a CO₂ history entry pointing to `/apps/history` in the shell's route/navigation configuration. The history page and `Co2SummaryCard` are exported from this feature's `index.js`.
+Register `AppLauncherPage` at `/apps`, `RewardsPage` at `/rewards`, and add the exported `FootprintTab` to Profile's footprint tab. Add Apps, Rewards, and CO₂ history/profile entries to the shell navigation as appropriate. Profile's coupons link should point to `/rewards?tab=coupons`.
+
+The three exported components for Shubham are `TopBarPills`, `MonthBars`, and `FootprintTab` from this feature's `index.js`.
 
 ## Authentication swap
 
@@ -28,10 +30,32 @@ Register `AppLauncherPage` at `/apps` and `Co2HistoryPage` at `/apps/history`. A
 - `PATCH /api/co2/food/:id`
 - `GET /api/co2/logs?status=pending_log`
 - `GET /api/co2/summary`
+- `GET /api/points/summary`
+- `GET /api/points/history?months=6`
+- `GET /api/points/ledger?limit=30`
+- `GET /api/rewards`
+- `POST /api/rewards/:id/redeem`
+- `GET /api/rewards/mine`
+- `GET /api/rewards/wallet`
+- `PATCH /api/rewards/wallet/:id/use`
 
 ## Prisma models
 
 - `UserApp`: per-user App Launcher shortcuts.
 - `Co2Log`: per-user travel and food estimates/logs.
+- `Reward`: demo marketplace offers.
+- `Redemption`: user reward purchases, cascading from `Profile` on user deletion.
 
 Both models relate to `Profile` through `userId` with `onDelete: Cascade`, so deleting a profile cascades to its `UserApp` and `Co2Log` rows.
+
+## Migration handoff
+
+Do not run a migration from this branch. Shubham should add the Phase 1 fields and new `Reward`/`Redemption` blocks from `backend/prisma/schema.prisma`, then generate/apply the shared migration.
+
+The migration must include these `co2_logs` column lines:
+
+```sql
+ALTER TABLE "co2_logs" ADD COLUMN "savedKg" DOUBLE PRECISION NOT NULL DEFAULT 0;
+ALTER TABLE "co2_logs" ADD COLUMN "pointsEarned" DOUBLE PRECISION NOT NULL DEFAULT 0;
+ALTER TABLE "co2_logs" ADD COLUMN "chosenVehicle" TEXT;
+```

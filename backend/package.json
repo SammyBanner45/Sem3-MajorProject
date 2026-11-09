@@ -13,7 +13,8 @@
     "prisma:migrate:init": "prisma migrate dev --name init",
     "db:migrate": "prisma migrate dev",
     "db:seed": "node prisma/seed.js",
-    "seed:users": "node prisma/seed.users.js"
+    "seed:users": "node prisma/seed.users.js",
+    "seed:rewards": "node prisma/seed.rewards.js"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",

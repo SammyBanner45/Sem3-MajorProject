@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { co2Api } from './api';
+import { co2Api, notifyPointsUpdated } from './api';
 
 const vehicleLabels = {
-  auto: 'Auto rickshaw', bike: 'Bike', cab: 'Cab', car: 'Car', bus: 'Bus', train: 'Train', metro: 'Metro', walk: 'Walk'
+  walk: 'Walk', bicycle: 'Bicycle', metro: 'Metro', bus: 'Bus', cab_ev: 'EV cab', motorbike: 'Motorbike', auto_rickshaw: 'Auto rickshaw', cab_petrol: 'Petrol cab'
 };
 
 export default function TravelEstimateSheet({ app, onClose }) {
@@ -14,6 +14,7 @@ export default function TravelEstimateSheet({ app, onClose }) {
   const [locationMessage, setLocationMessage] = useState('');
   const [error, setError] = useState('');
   const [saveError, setSaveError] = useState('');
+  const [saveResult, setSaveResult] = useState(null);
   const requestNumber = useRef(0);
 
   useEffect(() => {
@@ -72,9 +73,11 @@ export default function TravelEstimateSheet({ app, onClose }) {
     setSaveError('');
     const appWindow = window.open('', '_blank');
     try {
-      await co2Api.saveTravel({ origin: pickup.trim(), destination: drop.trim(), vehicle: selectedVehicle });
-    } catch {
-      setSaveError('Your estimate could not be saved, but you can still continue.');
+      const result = await co2Api.saveTravel({ origin: pickup.trim(), destination: drop.trim(), chosenVehicle: selectedVehicle });
+      setSaveResult(result);
+      notifyPointsUpdated();
+    } catch (requestError) {
+      setSaveError(requestError.message || 'Your estimate could not be saved, but you can still continue.');
     } finally {
       if (appWindow) {
         appWindow.location.href = app.url;
@@ -91,8 +94,8 @@ export default function TravelEstimateSheet({ app, onClose }) {
   const emissions = estimate?.emissions || {};
 
   return (
-    <div className="fixed inset-0 z-40 flex items-end bg-slate-950/40" role="dialog" aria-modal="true" aria-labelledby="travel-estimate-title">
-      <div className="max-h-[92dvh] w-full overflow-y-auto rounded-t-3xl bg-white p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-end bg-slate-950/40" role="dialog" aria-modal="true" aria-labelledby="travel-estimate-title">
+      <div className="max-h-[92dvh] w-full overflow-y-auto rounded-t-3xl bg-white p-5 pb-[calc(5rem+env(safe-area-inset-bottom))] shadow-xl">
         <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-slate-200" />
         <div className="flex items-start justify-between gap-3">
           <div><p className="text-sm font-medium text-emerald-700">Travel estimate</p><h2 id="travel-estimate-title" className="mt-1 text-xl font-bold text-slate-900">Before opening {app.name}</h2></div>
@@ -107,6 +110,7 @@ export default function TravelEstimateSheet({ app, onClose }) {
         {estimate && !loading && <div className="mt-5"><div className="flex items-center justify-between"><h3 className="font-bold text-slate-900">Choose a vehicle</h3><span className="text-xs text-slate-500">{estimate.distanceKm?.toFixed?.(1) || estimate.distanceKm} km</span></div><div className="mt-3 space-y-2">{Object.entries(emissions).map(([vehicle, value]) => <button key={vehicle} type="button" onClick={() => setSelectedVehicle(vehicle)} className={`flex min-h-16 w-full items-center justify-between rounded-xl border p-3 text-left ${selectedVehicle === vehicle ? 'border-emerald-500 bg-emerald-50' : 'border-slate-200 bg-white'}`}><span><span className="block font-semibold text-slate-900">{vehicleLabels[vehicle] || vehicle}</span>{vehicle === lowestVehicle && <span className="text-xs font-medium text-emerald-700">Lowest emission</span>}</span><span className="text-right"><span className="block font-bold text-slate-900">{Number(value).toFixed(3)} kg</span>{estimate.approximate && <span className="text-[11px] text-amber-700">Approximate</span>}</span></button>)}</div></div>}
         <p className="mt-5 text-xs leading-5 text-slate-500">Estimates use average emission factors and may differ from actual emissions.</p>
         {saveError && <p className="mt-2 text-xs text-slate-500" role="status">{saveError}</p>}
+        {saveResult && <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-4"><p className="text-sm font-bold text-emerald-800">{saveResult.capReached ? 'Daily limit reached (5 pts)' : `+${Number(saveResult.pointsEarned || 0).toFixed(2)} pts earned`}</p>{saveResult.reason && <p className="mt-1 text-xs text-slate-600">{saveResult.reason}</p>}<p className="mt-2 text-xs text-slate-600">Trip saved as an estimate.</p></div>}
         <div className="mt-4 flex gap-3"><button type="button" onClick={onClose} className="min-h-12 flex-1 rounded-xl border border-slate-200 px-4 font-semibold text-slate-700">Close</button><button type="button" onClick={continueToApp} disabled={!estimate || loading || !selectedVehicle} className="min-h-12 flex-1 rounded-xl bg-emerald-600 px-4 font-semibold text-white disabled:opacity-50">Continue to {app.name}</button></div>
       </div>
     </div>

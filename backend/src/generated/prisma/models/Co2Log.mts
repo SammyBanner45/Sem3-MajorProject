@@ -28,11 +28,15 @@ export type AggregateCo2Log = {
 
 export type Co2LogAvgAggregateOutputType = {
   co2Kg: number | null
+  savedKg: number | null
+  pointsEarned: number | null
   distanceKm: number | null
 }
 
 export type Co2LogSumAggregateOutputType = {
   co2Kg: number | null
+  savedKg: number | null
+  pointsEarned: number | null
   distanceKm: number | null
 }
 
@@ -42,6 +46,9 @@ export type Co2LogMinAggregateOutputType = {
   type: $Enums.Co2LogType | null
   status: $Enums.Co2LogStatus | null
   co2Kg: number | null
+  savedKg: number | null
+  pointsEarned: number | null
+  chosenVehicle: string | null
   distanceKm: number | null
   createdAt: Date | null
   loggedAt: Date | null
@@ -53,6 +60,9 @@ export type Co2LogMaxAggregateOutputType = {
   type: $Enums.Co2LogType | null
   status: $Enums.Co2LogStatus | null
   co2Kg: number | null
+  savedKg: number | null
+  pointsEarned: number | null
+  chosenVehicle: string | null
   distanceKm: number | null
   createdAt: Date | null
   loggedAt: Date | null
@@ -64,6 +74,9 @@ export type Co2LogCountAggregateOutputType = {
   type: number
   status: number
   co2Kg: number
+  savedKg: number
+  pointsEarned: number
+  chosenVehicle: number
   distanceKm: number
   details: number
   createdAt: number
@@ -74,11 +87,15 @@ export type Co2LogCountAggregateOutputType = {
 
 export type Co2LogAvgAggregateInputType = {
   co2Kg?: true
+  savedKg?: true
+  pointsEarned?: true
   distanceKm?: true
 }
 
 export type Co2LogSumAggregateInputType = {
   co2Kg?: true
+  savedKg?: true
+  pointsEarned?: true
   distanceKm?: true
 }
 
@@ -88,6 +105,9 @@ export type Co2LogMinAggregateInputType = {
   type?: true
   status?: true
   co2Kg?: true
+  savedKg?: true
+  pointsEarned?: true
+  chosenVehicle?: true
   distanceKm?: true
   createdAt?: true
   loggedAt?: true
@@ -99,6 +119,9 @@ export type Co2LogMaxAggregateInputType = {
   type?: true
   status?: true
   co2Kg?: true
+  savedKg?: true
+  pointsEarned?: true
+  chosenVehicle?: true
   distanceKm?: true
   createdAt?: true
   loggedAt?: true
@@ -110,6 +133,9 @@ export type Co2LogCountAggregateInputType = {
   type?: true
   status?: true
   co2Kg?: true
+  savedKg?: true
+  pointsEarned?: true
+  chosenVehicle?: true
   distanceKm?: true
   details?: true
   createdAt?: true
@@ -209,6 +235,9 @@ export type Co2LogGroupByOutputType = {
   type: $Enums.Co2LogType
   status: $Enums.Co2LogStatus
   co2Kg: number
+  savedKg: number
+  pointsEarned: number
+  chosenVehicle: string | null
   distanceKm: number | null
   details: runtime.JsonValue
   createdAt: Date
@@ -244,6 +273,9 @@ export type Co2LogWhereInput = {
   type?: Prisma.EnumCo2LogTypeFilter<"Co2Log"> | $Enums.Co2LogType
   status?: Prisma.EnumCo2LogStatusFilter<"Co2Log"> | $Enums.Co2LogStatus
   co2Kg?: Prisma.FloatFilter<"Co2Log"> | number
+  savedKg?: Prisma.FloatFilter<"Co2Log"> | number
+  pointsEarned?: Prisma.FloatFilter<"Co2Log"> | number
+  chosenVehicle?: Prisma.StringNullableFilter<"Co2Log"> | string | null
   distanceKm?: Prisma.FloatNullableFilter<"Co2Log"> | number | null
   details?: Prisma.JsonFilter<"Co2Log">
   createdAt?: Prisma.DateTimeFilter<"Co2Log"> | Date | string
@@ -257,6 +289,9 @@ export type Co2LogOrderByWithRelationInput = {
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   co2Kg?: Prisma.SortOrder
+  savedKg?: Prisma.SortOrder
+  pointsEarned?: Prisma.SortOrder
+  chosenVehicle?: Prisma.SortOrderInput | Prisma.SortOrder
   distanceKm?: Prisma.SortOrderInput | Prisma.SortOrder
   details?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -273,6 +308,9 @@ export type Co2LogWhereUniqueInput = Prisma.AtLeast<{
   type?: Prisma.EnumCo2LogTypeFilter<"Co2Log"> | $Enums.Co2LogType
   status?: Prisma.EnumCo2LogStatusFilter<"Co2Log"> | $Enums.Co2LogStatus
   co2Kg?: Prisma.FloatFilter<"Co2Log"> | number
+  savedKg?: Prisma.FloatFilter<"Co2Log"> | number
+  pointsEarned?: Prisma.FloatFilter<"Co2Log"> | number
+  chosenVehicle?: Prisma.StringNullableFilter<"Co2Log"> | string | null
   distanceKm?: Prisma.FloatNullableFilter<"Co2Log"> | number | null
   details?: Prisma.JsonFilter<"Co2Log">
   createdAt?: Prisma.DateTimeFilter<"Co2Log"> | Date | string
@@ -286,6 +324,9 @@ export type Co2LogOrderByWithAggregationInput = {
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   co2Kg?: Prisma.SortOrder
+  savedKg?: Prisma.SortOrder
+  pointsEarned?: Prisma.SortOrder
+  chosenVehicle?: Prisma.SortOrderInput | Prisma.SortOrder
   distanceKm?: Prisma.SortOrderInput | Prisma.SortOrder
   details?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -306,6 +347,9 @@ export type Co2LogScalarWhereWithAggregatesInput = {
   type?: Prisma.EnumCo2LogTypeWithAggregatesFilter<"Co2Log"> | $Enums.Co2LogType
   status?: Prisma.EnumCo2LogStatusWithAggregatesFilter<"Co2Log"> | $Enums.Co2LogStatus
   co2Kg?: Prisma.FloatWithAggregatesFilter<"Co2Log"> | number
+  savedKg?: Prisma.FloatWithAggregatesFilter<"Co2Log"> | number
+  pointsEarned?: Prisma.FloatWithAggregatesFilter<"Co2Log"> | number
+  chosenVehicle?: Prisma.StringNullableWithAggregatesFilter<"Co2Log"> | string | null
   distanceKm?: Prisma.FloatNullableWithAggregatesFilter<"Co2Log"> | number | null
   details?: Prisma.JsonWithAggregatesFilter<"Co2Log">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Co2Log"> | Date | string
@@ -317,6 +361,9 @@ export type Co2LogCreateInput = {
   type: $Enums.Co2LogType
   status: $Enums.Co2LogStatus
   co2Kg: number
+  savedKg?: number
+  pointsEarned?: number
+  chosenVehicle?: string | null
   distanceKm?: number | null
   details: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -330,6 +377,9 @@ export type Co2LogUncheckedCreateInput = {
   type: $Enums.Co2LogType
   status: $Enums.Co2LogStatus
   co2Kg: number
+  savedKg?: number
+  pointsEarned?: number
+  chosenVehicle?: string | null
   distanceKm?: number | null
   details: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -341,6 +391,9 @@ export type Co2LogUpdateInput = {
   type?: Prisma.EnumCo2LogTypeFieldUpdateOperationsInput | $Enums.Co2LogType
   status?: Prisma.EnumCo2LogStatusFieldUpdateOperationsInput | $Enums.Co2LogStatus
   co2Kg?: Prisma.FloatFieldUpdateOperationsInput | number
+  savedKg?: Prisma.FloatFieldUpdateOperationsInput | number
+  pointsEarned?: Prisma.FloatFieldUpdateOperationsInput | number
+  chosenVehicle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   distanceKm?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   details?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -354,6 +407,9 @@ export type Co2LogUncheckedUpdateInput = {
   type?: Prisma.EnumCo2LogTypeFieldUpdateOperationsInput | $Enums.Co2LogType
   status?: Prisma.EnumCo2LogStatusFieldUpdateOperationsInput | $Enums.Co2LogStatus
   co2Kg?: Prisma.FloatFieldUpdateOperationsInput | number
+  savedKg?: Prisma.FloatFieldUpdateOperationsInput | number
+  pointsEarned?: Prisma.FloatFieldUpdateOperationsInput | number
+  chosenVehicle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   distanceKm?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   details?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -366,6 +422,9 @@ export type Co2LogCreateManyInput = {
   type: $Enums.Co2LogType
   status: $Enums.Co2LogStatus
   co2Kg: number
+  savedKg?: number
+  pointsEarned?: number
+  chosenVehicle?: string | null
   distanceKm?: number | null
   details: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -377,6 +436,9 @@ export type Co2LogUpdateManyMutationInput = {
   type?: Prisma.EnumCo2LogTypeFieldUpdateOperationsInput | $Enums.Co2LogType
   status?: Prisma.EnumCo2LogStatusFieldUpdateOperationsInput | $Enums.Co2LogStatus
   co2Kg?: Prisma.FloatFieldUpdateOperationsInput | number
+  savedKg?: Prisma.FloatFieldUpdateOperationsInput | number
+  pointsEarned?: Prisma.FloatFieldUpdateOperationsInput | number
+  chosenVehicle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   distanceKm?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   details?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -389,6 +451,9 @@ export type Co2LogUncheckedUpdateManyInput = {
   type?: Prisma.EnumCo2LogTypeFieldUpdateOperationsInput | $Enums.Co2LogType
   status?: Prisma.EnumCo2LogStatusFieldUpdateOperationsInput | $Enums.Co2LogStatus
   co2Kg?: Prisma.FloatFieldUpdateOperationsInput | number
+  savedKg?: Prisma.FloatFieldUpdateOperationsInput | number
+  pointsEarned?: Prisma.FloatFieldUpdateOperationsInput | number
+  chosenVehicle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   distanceKm?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   details?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -411,6 +476,9 @@ export type Co2LogCountOrderByAggregateInput = {
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   co2Kg?: Prisma.SortOrder
+  savedKg?: Prisma.SortOrder
+  pointsEarned?: Prisma.SortOrder
+  chosenVehicle?: Prisma.SortOrder
   distanceKm?: Prisma.SortOrder
   details?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -419,6 +487,8 @@ export type Co2LogCountOrderByAggregateInput = {
 
 export type Co2LogAvgOrderByAggregateInput = {
   co2Kg?: Prisma.SortOrder
+  savedKg?: Prisma.SortOrder
+  pointsEarned?: Prisma.SortOrder
   distanceKm?: Prisma.SortOrder
 }
 
@@ -428,6 +498,9 @@ export type Co2LogMaxOrderByAggregateInput = {
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   co2Kg?: Prisma.SortOrder
+  savedKg?: Prisma.SortOrder
+  pointsEarned?: Prisma.SortOrder
+  chosenVehicle?: Prisma.SortOrder
   distanceKm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   loggedAt?: Prisma.SortOrder
@@ -439,6 +512,9 @@ export type Co2LogMinOrderByAggregateInput = {
   type?: Prisma.SortOrder
   status?: Prisma.SortOrder
   co2Kg?: Prisma.SortOrder
+  savedKg?: Prisma.SortOrder
+  pointsEarned?: Prisma.SortOrder
+  chosenVehicle?: Prisma.SortOrder
   distanceKm?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   loggedAt?: Prisma.SortOrder
@@ -446,6 +522,8 @@ export type Co2LogMinOrderByAggregateInput = {
 
 export type Co2LogSumOrderByAggregateInput = {
   co2Kg?: Prisma.SortOrder
+  savedKg?: Prisma.SortOrder
+  pointsEarned?: Prisma.SortOrder
   distanceKm?: Prisma.SortOrder
 }
 
@@ -520,6 +598,9 @@ export type Co2LogCreateWithoutProfileInput = {
   type: $Enums.Co2LogType
   status: $Enums.Co2LogStatus
   co2Kg: number
+  savedKg?: number
+  pointsEarned?: number
+  chosenVehicle?: string | null
   distanceKm?: number | null
   details: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -531,6 +612,9 @@ export type Co2LogUncheckedCreateWithoutProfileInput = {
   type: $Enums.Co2LogType
   status: $Enums.Co2LogStatus
   co2Kg: number
+  savedKg?: number
+  pointsEarned?: number
+  chosenVehicle?: string | null
   distanceKm?: number | null
   details: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -572,6 +656,9 @@ export type Co2LogScalarWhereInput = {
   type?: Prisma.EnumCo2LogTypeFilter<"Co2Log"> | $Enums.Co2LogType
   status?: Prisma.EnumCo2LogStatusFilter<"Co2Log"> | $Enums.Co2LogStatus
   co2Kg?: Prisma.FloatFilter<"Co2Log"> | number
+  savedKg?: Prisma.FloatFilter<"Co2Log"> | number
+  pointsEarned?: Prisma.FloatFilter<"Co2Log"> | number
+  chosenVehicle?: Prisma.StringNullableFilter<"Co2Log"> | string | null
   distanceKm?: Prisma.FloatNullableFilter<"Co2Log"> | number | null
   details?: Prisma.JsonFilter<"Co2Log">
   createdAt?: Prisma.DateTimeFilter<"Co2Log"> | Date | string
@@ -583,6 +670,9 @@ export type Co2LogCreateManyProfileInput = {
   type: $Enums.Co2LogType
   status: $Enums.Co2LogStatus
   co2Kg: number
+  savedKg?: number
+  pointsEarned?: number
+  chosenVehicle?: string | null
   distanceKm?: number | null
   details: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
@@ -594,6 +684,9 @@ export type Co2LogUpdateWithoutProfileInput = {
   type?: Prisma.EnumCo2LogTypeFieldUpdateOperationsInput | $Enums.Co2LogType
   status?: Prisma.EnumCo2LogStatusFieldUpdateOperationsInput | $Enums.Co2LogStatus
   co2Kg?: Prisma.FloatFieldUpdateOperationsInput | number
+  savedKg?: Prisma.FloatFieldUpdateOperationsInput | number
+  pointsEarned?: Prisma.FloatFieldUpdateOperationsInput | number
+  chosenVehicle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   distanceKm?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   details?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -605,6 +698,9 @@ export type Co2LogUncheckedUpdateWithoutProfileInput = {
   type?: Prisma.EnumCo2LogTypeFieldUpdateOperationsInput | $Enums.Co2LogType
   status?: Prisma.EnumCo2LogStatusFieldUpdateOperationsInput | $Enums.Co2LogStatus
   co2Kg?: Prisma.FloatFieldUpdateOperationsInput | number
+  savedKg?: Prisma.FloatFieldUpdateOperationsInput | number
+  pointsEarned?: Prisma.FloatFieldUpdateOperationsInput | number
+  chosenVehicle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   distanceKm?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   details?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -616,6 +712,9 @@ export type Co2LogUncheckedUpdateManyWithoutProfileInput = {
   type?: Prisma.EnumCo2LogTypeFieldUpdateOperationsInput | $Enums.Co2LogType
   status?: Prisma.EnumCo2LogStatusFieldUpdateOperationsInput | $Enums.Co2LogStatus
   co2Kg?: Prisma.FloatFieldUpdateOperationsInput | number
+  savedKg?: Prisma.FloatFieldUpdateOperationsInput | number
+  pointsEarned?: Prisma.FloatFieldUpdateOperationsInput | number
+  chosenVehicle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   distanceKm?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   details?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -630,6 +729,9 @@ export type Co2LogSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   type?: boolean
   status?: boolean
   co2Kg?: boolean
+  savedKg?: boolean
+  pointsEarned?: boolean
+  chosenVehicle?: boolean
   distanceKm?: boolean
   details?: boolean
   createdAt?: boolean
@@ -643,6 +745,9 @@ export type Co2LogSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   type?: boolean
   status?: boolean
   co2Kg?: boolean
+  savedKg?: boolean
+  pointsEarned?: boolean
+  chosenVehicle?: boolean
   distanceKm?: boolean
   details?: boolean
   createdAt?: boolean
@@ -656,6 +761,9 @@ export type Co2LogSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   type?: boolean
   status?: boolean
   co2Kg?: boolean
+  savedKg?: boolean
+  pointsEarned?: boolean
+  chosenVehicle?: boolean
   distanceKm?: boolean
   details?: boolean
   createdAt?: boolean
@@ -669,13 +777,16 @@ export type Co2LogSelectScalar = {
   type?: boolean
   status?: boolean
   co2Kg?: boolean
+  savedKg?: boolean
+  pointsEarned?: boolean
+  chosenVehicle?: boolean
   distanceKm?: boolean
   details?: boolean
   createdAt?: boolean
   loggedAt?: boolean
 }
 
-export type Co2LogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "type" | "status" | "co2Kg" | "distanceKm" | "details" | "createdAt" | "loggedAt", ExtArgs["result"]["co2Log"]>
+export type Co2LogOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "type" | "status" | "co2Kg" | "savedKg" | "pointsEarned" | "chosenVehicle" | "distanceKm" | "details" | "createdAt" | "loggedAt", ExtArgs["result"]["co2Log"]>
 export type Co2LogInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   profile?: boolean | Prisma.ProfileDefaultArgs<ExtArgs>
 }
@@ -697,6 +808,9 @@ export type $Co2LogPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     type: $Enums.Co2LogType
     status: $Enums.Co2LogStatus
     co2Kg: number
+    savedKg: number
+    pointsEarned: number
+    chosenVehicle: string | null
     distanceKm: number | null
     details: runtime.JsonValue
     createdAt: Date
@@ -1130,6 +1244,9 @@ export interface Co2LogFieldRefs {
   readonly type: Prisma.FieldRef<"Co2Log", 'Co2LogType'>
   readonly status: Prisma.FieldRef<"Co2Log", 'Co2LogStatus'>
   readonly co2Kg: Prisma.FieldRef<"Co2Log", 'Float'>
+  readonly savedKg: Prisma.FieldRef<"Co2Log", 'Float'>
+  readonly pointsEarned: Prisma.FieldRef<"Co2Log", 'Float'>
+  readonly chosenVehicle: Prisma.FieldRef<"Co2Log", 'String'>
   readonly distanceKm: Prisma.FieldRef<"Co2Log", 'Float'>
   readonly details: Prisma.FieldRef<"Co2Log", 'Json'>
   readonly createdAt: Prisma.FieldRef<"Co2Log", 'DateTime'>
