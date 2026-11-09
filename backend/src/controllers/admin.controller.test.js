@@ -2,11 +2,13 @@ const assert = require('node:assert/strict');
 const test = require('node:test');
 
 let mockSubmissions = [];
+const mockUserCoupons = new Map();
+let couponCreateCount = 0;
 
 const mockPrisma = {
   submission: {
     findMany: async ({ where, orderBy }) => {
-      let filtered = mockSubmissions.filter((s) => s.status === where.status);
+      let filtered = mockSubmissions.filter((s) => s.status === where.status && (!where.userId || s.userId === where.userId));
       if (orderBy?.createdAt === 'asc') {
         filtered = filtered.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
       }
@@ -25,7 +27,18 @@ const mockPrisma = {
       };
       return mockSubmissions[idx];
     }
-  }
+  },
+  coupon: { findFirst: async () => null },
+  userCoupon: {
+    findFirst: async ({ where }) => mockUserCoupons.get(`${where.userId}:${where.milestoneDay}`) || null,
+    create: async ({ data }) => {
+      couponCreateCount += 1;
+      const row = { id: `uc-${couponCreateCount}`, ...data, coupon: null };
+      mockUserCoupons.set(`${data.userId}:${data.milestoneDay}`, row);
+      return row;
+    },
+  },
+  $transaction: async (callback) => callback(mockPrisma),
 };
 
 require.cache[require.resolve('../lib/prisma')] = {
@@ -208,6 +221,10 @@ test('reviewSubmission rejects already reviewed submission with 409 Conflict', a
 });
 
 test('reviewSubmission approves a pending submission successfully', async () => {
+  mockSubmissions = [{
+    id: 'sub-older', taskId: 'task-older', userId: 'single-user', status: 'pending',
+    createdAt: new Date('2026-05-07T12:00:00.000Z'),
+  }];
   const req = {
     params: { id: 'sub-older' },
     body: { action: 'approve' },
@@ -228,7 +245,36 @@ test('reviewSubmission approves a pending submission successfully', async () => 
   assert.equal(jsonBody.rejectionReason, null);
 });
 
+test('approval transaction awards a historical streak milestone atomically', async () => {
+  mockUserCoupons.clear();
+  couponCreateCount = 0;
+  mockSubmissions = Array.from({ length: 7 }, (_, index) => ({
+    id: `day-${index + 1}`,
+    taskId: `task-${index + 1}`,
+    userId: 'milestone-user',
+    status: index === 6 ? 'pending' : 'approved',
+    createdAt: new Date(Date.UTC(2026, 0, 1 + index, 12)),
+  }));
+  const req = {
+    params: { id: 'day-7' },
+    body: { action: 'approve' },
+    user: { id: 'admin-user-id' },
+  };
+  let jsonBody;
+  const res = { json(body) { jsonBody = body; return this; } };
+
+  await reviewSubmission(req, res, (error) => { throw error; });
+
+  assert.equal(jsonBody.status, 'approved');
+  assert.equal(mockUserCoupons.get('milestone-user:7')?.milestoneDay, 7);
+  assert.equal(couponCreateCount, 1);
+});
+
 test('reviewSubmission rejects a pending submission with reason', async () => {
+  mockSubmissions = [{
+    id: 'sub-newer', taskId: 'task-newer', userId: 'reject-user', status: 'pending',
+    createdAt: new Date('2026-05-08T12:00:00.000Z'),
+  }];
   const req = {
     params: { id: 'sub-newer' },
     body: { action: 'reject', reason: 'Blurry photo' },

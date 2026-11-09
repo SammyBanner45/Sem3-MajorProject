@@ -1,6 +1,46 @@
 const prisma = require('../lib/prisma');
+const { awardHistoricalMilestonesInTransaction } = require('../services/coupons.service');
 
 const VALID_STATUSES = new Set(['pending', 'approved', 'rejected']);
+const SERIALIZATION_RETRIES = 4;
+
+class ReviewConflict extends Error {
+  constructor(status, message) {
+    super(message);
+    this.status = status;
+  }
+}
+
+async function approveWithRewards(submissionId, reviewedBy, reviewedAt) {
+  for (let attempt = 0; attempt < SERIALIZATION_RETRIES; attempt += 1) {
+    try {
+      return await prisma.$transaction(async (tx) => {
+        const submission = await tx.submission.findUnique({ where: { id: submissionId } });
+        if (!submission) throw new ReviewConflict(404, 'Submission not found');
+        if (submission.status !== 'pending') {
+          throw new ReviewConflict(409, `Cannot update submission with status '${submission.status}'. Only pending submissions can be reviewed.`);
+        }
+
+        const updated = await tx.submission.update({
+          where: { id: submissionId },
+          data: { status: 'approved', reviewedAt, reviewedBy, rejectionReason: null },
+          include: {
+            task: { select: { id: true, title: true, points: true, type: true } },
+            profile: { select: { id: true, displayName: true, email: true } },
+          },
+        });
+
+        await awardHistoricalMilestonesInTransaction(tx, submission.userId);
+        return updated;
+      }, { isolationLevel: 'Serializable' });
+    } catch (error) {
+      if (error instanceof ReviewConflict) throw error;
+      if (error?.code !== 'P2034' && error?.code !== 'P2002') throw error;
+      if (attempt === SERIALIZATION_RETRIES - 1) throw error;
+    }
+  }
+  throw new Error('Could not approve submission after serialization retries.');
+}
 
 /**
  * Helper to map a submission with joined relation data
@@ -75,7 +115,7 @@ async function listSubmissions(req, res, next) {
  * - Only pending submissions can be updated (returns 409 otherwise)
  * - Rejection requires a non-empty reason
  * - Sets status, reviewedAt, reviewedBy = req.user.id
- * - Does NOT calculate or write points, streaks, or coupons here.
+ * - Approved submissions and newly earned milestone coupons commit atomically.
  */
 async function reviewSubmission(req, res, next) {
   try {
@@ -105,16 +145,28 @@ async function reviewSubmission(req, res, next) {
       });
     }
 
-    const newStatus = action === 'approve' ? 'approved' : 'rejected';
     const reviewedAt = new Date();
     const reviewedBy = req.user.id;
-    const rejectionReason = action === 'reject' ? reason.trim() : null;
+
+    if (action === 'approve') {
+      try {
+        const updated = await approveWithRewards(submissionId, reviewedBy, reviewedAt);
+        return res.json(mapSubmission(updated));
+      } catch (error) {
+        if (error instanceof ReviewConflict) {
+          return res.status(error.status).json({ error: error.message });
+        }
+        return next(error);
+      }
+    }
+
+    const rejectionReason = reason.trim();
 
     // Update only the submission row
     const updated = await prisma.submission.update({
       where: { id: submissionId },
       data: {
-        status: newStatus,
+        status: 'rejected',
         reviewedAt,
         reviewedBy,
         rejectionReason
