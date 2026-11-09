@@ -11,6 +11,7 @@ const adminRouter = require('./routes/admin.routes');
 const healthRouter = require('./routes/health');
 const { createAuthRouter } = require('./routes/auth');
 const { createProfileRouter } = require('./routes/profile');
+const { createStreakRouter } = require('./routes/streak.routes');
 const { errorHandler } = require('./middleware/errorHandler');
 const { assertJwtSecret } = require('./services/jwt');
 const { assertPasswordPepper } = require('./services/passwords');
@@ -47,6 +48,7 @@ function createApp({ prisma }) {
 
   app.use('/api/auth', createAuthRouter(prisma));
   app.use('/api/profile', createProfileRouter(prisma));
+  app.use('/api/streak', createStreakRouter(prisma));
   app.use(errorHandler);
   return app;
 }

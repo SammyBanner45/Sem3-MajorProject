@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, CalendarCheck2, Compass, Flame, LayoutGrid, Sparkles } from 'lucide-react';
 import { useAuth } from '../auth/AuthProvider.jsx';
-import useMyStats from '../profile/useMyStats.js';
+import useStreak from '../streak/useStreak.js';
 
 const destinations = [
   {
@@ -36,7 +36,7 @@ function greetingForHour(hour) {
 
 export default function Home() {
   const { user } = useAuth();
-  const { stats, loading, error } = useMyStats(user?.id);
+  const { streak, loading, error } = useStreak();
   const name = user?.displayName?.trim() || 'EcoSync member';
   const greeting = greetingForHour(new Date().getHours());
 
@@ -56,7 +56,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="mt-6 flex items-center gap-3 rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-sm">
+        <Link to="/streak" className="mt-6 flex items-center gap-3 rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-sm transition hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-white/30" aria-label="View your streak">
           <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-orange-300/20 text-orange-100">
             <Flame className="h-5 w-5" aria-hidden="true" />
           </span>
@@ -64,14 +64,14 @@ export default function Home() {
             <p className="text-xs font-semibold uppercase tracking-wide text-eco-100">Today’s streak</p>
             {loading ? (
               <p className="mt-0.5 text-sm text-white/80" role="status">Loading activity summary…</p>
-            ) : stats ? (
-              <p className="mt-0.5 text-lg font-bold">{stats.currentStreak} {stats.currentStreak === 1 ? 'day' : 'days'}</p>
+            ) : streak ? (
+              <p className="mt-0.5 text-lg font-bold">{streak.currentStreak} {streak.currentStreak === 1 ? 'day' : 'days'}</p>
             ) : (
               <p className="mt-0.5 text-sm text-white/80">Streak data is unavailable right now.</p>
             )}
           </div>
-          {stats?.currentStreak === 0 && !loading && <span className="text-xs text-white/75">Start with one approved activity</span>}
-        </div>
+          {streak?.currentStreak === 0 && !loading && <span className="text-xs text-white/75">Start with one approved activity</span>}
+        </Link>
         {error && <p className="mt-2 text-xs leading-5 text-eco-100" role="status">{error}</p>}
       </section>
 
