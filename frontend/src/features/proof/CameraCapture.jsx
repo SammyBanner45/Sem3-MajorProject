@@ -205,7 +205,7 @@ export default function CameraCapture({ onCapture, onRetake, capturedPreview }) 
           <button
             type="button"
             onClick={handleRetake}
-            className="min-h-[48px] px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-2xl text-xs font-bold flex items-center gap-2 transition active:scale-95"
+            className="min-h-[48px] px-5 py-2.5 bg-surface-container hover:bg-surface-container-high text-primary rounded-2xl text-xs font-bold font-label-chunky uppercase flex items-center gap-2 transition shadow-[0_3px_0_#0a0f0d] active:translate-y-1 active:shadow-none border border-surface-container-high cursor-pointer"
           >
             <RotateCcw className="w-4 h-4" />
             <span>Retake Photo</span>
@@ -216,14 +216,14 @@ export default function CameraCapture({ onCapture, onRetake, capturedPreview }) 
             disabled={!cameraActive || !!error}
             onClick={handleCaptureFrame}
             aria-label="Capture live camera photo"
-            className={`min-h-[56px] min-w-[56px] w-14 h-14 rounded-full border-4 border-eco-500 bg-white p-1 flex items-center justify-center transition shadow-lg ${
+            className={`min-h-[64px] min-w-[64px] w-16 h-16 rounded-full border-4 border-primary-container bg-surface-container-lowest p-1 flex items-center justify-center transition shadow-[0_0_20px_rgba(163,245,66,0.5),0_4px_0_#2d5000] ${
               cameraActive && !error
-                ? 'hover:scale-105 active:scale-95 cursor-pointer'
+                ? 'hover:scale-105 active:translate-y-1 active:shadow-[0_0_10px_rgba(163,245,66,0.3),0_1px_0_#2d5000] cursor-pointer'
                 : 'opacity-50 cursor-not-allowed'
             }`}
           >
-            <div className="w-full h-full rounded-full bg-eco-600 flex items-center justify-center text-white">
-              <Camera className="w-6 h-6" />
+            <div className="w-full h-full rounded-full bg-primary-container flex items-center justify-center text-on-primary-fixed">
+              <Camera className="w-7 h-7" />
             </div>
           </button>
         )}

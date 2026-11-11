@@ -58,5 +58,35 @@
     "description": "Turn off idle lights, fans, and unplug phantom power consumers before leaving.",
     "icon": "💡",
     "points": 10
+  },
+  {
+    "title": "Solar Clothes Drying",
+    "description": "Dry washed clothes naturally under the sun on a drying rack instead of using an electric dryer.",
+    "icon": "☀️",
+    "points": 15
+  },
+  {
+    "title": "Paperless Digital Receipts",
+    "description": "Opt for digital e-receipts and paperless billing for all daily transactions.",
+    "icon": "📱",
+    "points": 10
+  },
+  {
+    "title": "Quick Ambient Shower",
+    "description": "Take a short cold or ambient-temperature shower under 5 minutes to conserve water heating energy.",
+    "icon": "🚿",
+    "points": 15
+  },
+  {
+    "title": "Carpooling / Ride Sharing",
+    "description": "Share a vehicle ride with colleagues or neighbors to lower per-person carbon emissions.",
+    "icon": "🚗",
+    "points": 20
+  },
+  {
+    "title": "Eco-Friendly Cleaning",
+    "description": "Clean household surfaces using non-toxic, biodegradable, or plant-based natural solutions.",
+    "icon": "🧽",
+    "points": 15
   }
 ]

@@ -246,25 +246,25 @@ export default function AdminReviewPage() {
           <button
             type="button"
             onClick={() => navigate('/activities')}
-            className="w-9 h-9 rounded-xl bg-white border border-gray-100 flex items-center justify-center text-gray-600 hover:text-gray-900 transition shadow-2xs"
+            className="w-9 h-9 rounded-xl bg-surface-container border border-surface-container-high flex items-center justify-center text-on-surface hover:text-primary transition shadow-[0_2px_0_#0a0f0d]"
             aria-label="Back"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
           <div>
-            <h1 className="text-xl font-black tracking-tight text-gray-900">Admin Review</h1>
-            <p className="text-xs text-gray-500">Live proof verification queue</p>
+            <h1 className="text-xl font-black tracking-tight text-primary uppercase">Admin Review</h1>
+            <p className="text-xs text-on-surface-variant">Live proof verification queue</p>
           </div>
         </div>
 
         <div className="flex items-center gap-1.5">
-          <span className="text-xs font-black text-amber-800 bg-amber-100 px-2.5 py-1 rounded-full border border-amber-200">
+          <span className="text-xs font-black text-on-tertiary bg-tertiary-container px-2.5 py-1 rounded-full">
             {submissions.length} Pending
           </span>
           <button
             type="button"
             onClick={loadPendingSubmissions}
-            className="w-9 h-9 rounded-xl bg-white border border-gray-100 flex items-center justify-center text-gray-600 hover:text-gray-900 transition shadow-2xs"
+            className="w-9 h-9 rounded-xl bg-surface-container border border-surface-container-high flex items-center justify-center text-on-surface hover:text-primary transition shadow-[0_2px_0_#0a0f0d]"
             aria-label="Refresh queue"
           >
             <RotateCcw className="w-4 h-4" />
