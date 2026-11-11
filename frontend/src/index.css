@@ -2,22 +2,4 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  color-scheme: light;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  background-color: #f8fafc;
-  color: #0f172a;
-  -webkit-tap-highlight-color: transparent;
-}
-
-#root {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
+/* Cleaned up legacy light-theme styles in preparation for Tactile Arcade dark theme */
