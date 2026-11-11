@@ -22,12 +22,12 @@ function formatDate(isoString) {
 export default function MySubmissions({ submissions = [], onResubmit, onRefresh }) {
   if (!submissions || submissions.length === 0) {
     return (
-      <div className="p-6 bg-white rounded-3xl border border-gray-100 text-center space-y-2">
-        <div className="w-12 h-12 rounded-2xl bg-gray-50 flex items-center justify-center text-gray-400 mx-auto">
+      <div className="p-6 bg-surface-container rounded-3xl border border-surface-container-high text-center space-y-2">
+        <div className="w-12 h-12 rounded-2xl bg-surface-container-high flex items-center justify-center text-on-surface-variant mx-auto">
           <ImageIcon className="w-6 h-6" />
         </div>
-        <h3 className="text-sm font-bold text-gray-800">No Photo Submissions Yet</h3>
-        <p className="text-xs text-gray-500 max-w-xs mx-auto">
+        <h3 className="text-sm font-bold text-primary uppercase">No Photo Submissions Yet</h3>
+        <p className="text-xs text-on-surface-variant max-w-xs mx-auto">
           Capture live photo proof for any daily activity or challenge to earn eco-points!
         </p>
       </div>
@@ -37,14 +37,14 @@ export default function MySubmissions({ submissions = [], onResubmit, onRefresh 
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between px-1">
-        <h3 className="text-xs font-black text-gray-700 uppercase tracking-wider">
+        <h3 className="text-xs font-black text-on-surface-variant uppercase tracking-wider">
           My Submissions History
         </h3>
         {onRefresh && (
           <button
             type="button"
             onClick={onRefresh}
-            className="text-[11px] font-bold text-eco-600 hover:text-eco-700 flex items-center gap-1"
+            className="text-[11px] font-bold text-primary-container hover:underline flex items-center gap-1"
           >
             <RotateCcw className="w-3 h-3" />
             Refresh
@@ -61,31 +61,31 @@ export default function MySubmissions({ submissions = [], onResubmit, onRefresh 
           return (
             <div
               key={sub.id}
-              className="p-4 bg-white rounded-2xl border border-gray-100 shadow-2xs space-y-2.5"
+              className="p-4 bg-surface-container rounded-2xl border border-surface-container-high shadow-[0_2px_0_#0a0f0d] space-y-2.5"
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="space-y-0.5">
-                  <h4 className="font-bold text-sm text-gray-900 leading-snug">
+                  <h4 className="font-bold text-sm text-primary uppercase leading-snug">
                     {sub.taskTitle || 'Activity Proof'}
                   </h4>
-                  <p className="text-[11px] text-gray-400">{formatDate(sub.date || sub.createdAt)}</p>
+                  <p className="text-[11px] text-on-surface-variant">{formatDate(sub.date || sub.createdAt)}</p>
                 </div>
 
                 {isApproved && (
-                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 shrink-0">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-on-primary-fixed bg-primary-container px-2.5 py-0.5 rounded-full shrink-0">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
                     Approved
                   </span>
                 )}
                 {isPending && (
-                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200 shrink-0">
-                    <Clock className="w-3.5 h-3.5 text-amber-600" />
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-on-tertiary bg-tertiary-container px-2.5 py-0.5 rounded-full shrink-0">
+                    <Clock className="w-3.5 h-3.5" />
                     Pending Review
                   </span>
                 )}
                 {isRejected && (
-                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-rose-700 bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-200 shrink-0">
-                    <AlertCircle className="w-3.5 h-3.5 text-rose-600" />
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-on-error bg-error px-2.5 py-0.5 rounded-full shrink-0">
+                    <AlertCircle className="w-3.5 h-3.5" />
                     Rejected
                   </span>
                 )}

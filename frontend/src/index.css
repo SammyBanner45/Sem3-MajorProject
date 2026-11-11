@@ -2,4 +2,59 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Cleaned up legacy light-theme styles in preparation for Tactile Arcade dark theme */
+@layer base {
+  html, body {
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    background-color: #0f1512;
+    color: #dee4df;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    overscroll-behavior: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+}
+
+/* Hide scrollbars for clean arcade pill rows */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Tactile arcade buttons and cards extrusion classes */
+.tactile-btn {
+  box-shadow: 0 4px 0 #2d5000;
+  transition: all 0.1s ease-in-out;
+}
+.tactile-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #2d5000;
+}
+
+.tactile-card {
+  box-shadow: 0 4px 0 #0a0f0d;
+  transition: all 0.15s ease-in-out;
+}
+.tactile-card:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #0a0f0d;
+}
+
+.tactile-pill-yellow {
+  box-shadow: 0 3px 0 #997300;
+}
+.tactile-pill-yellow:active {
+  transform: translateY(2px);
+  box-shadow: none;
+}

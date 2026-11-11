@@ -1,16 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
-import {
-  Camera,
-  ShieldAlert,
-  CheckCircle2,
-  AlertCircle,
-  Loader2,
-  X,
-  ArrowLeft,
-  Sparkles,
-  ChevronDown
-} from 'lucide-react';
 import CameraCapture from './CameraCapture';
 import MySubmissions from './MySubmissions';
 import { fetchActivities, fetchDailyChallenge, fetchMySubmissions, submitPhotoProof } from '../activities/api';
@@ -48,7 +37,6 @@ export default function Proof() {
     }
   }
 
-  // Load fallback tasks if user arrived directly at /proof without selecting an activity
   useEffect(() => {
     loadSubmissions();
 
@@ -88,12 +76,10 @@ export default function Proof() {
     setSubmitError(null);
 
     try {
-      // Create a File object from blob for multipart form submission
       const file = new File([capturedBlob], 'camera-proof.jpg', { type: 'image/jpeg' });
       await submitPhotoProof(selectedTask.id, file);
 
       setSubmitSuccess(true);
-      // Refresh submissions history in background
       loadSubmissions();
     } catch (err) {
       console.error('Submission failed:', err);
@@ -109,67 +95,58 @@ export default function Proof() {
     setSelectedTask({
       id: sub.taskId,
       title: sub.taskTitle,
-      points: sub.points || 15
+      points: sub.points || 15,
     });
     handleRetake();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   return (
-    <div className="space-y-6 max-w-md mx-auto">
+    <div className="flex flex-col gap-space-lg select-none pb-8 max-w-md mx-auto">
       {/* Top Header */}
       <div className="flex items-center justify-between pt-1">
         <div className="flex items-center gap-2.5">
           <button
             type="button"
             onClick={() => navigate('/activities')}
-            className="w-9 h-9 rounded-xl bg-white border border-gray-100 flex items-center justify-center text-gray-600 hover:text-gray-900 transition shadow-2xs"
+            className="w-9 h-9 rounded-xl bg-surface-container border border-surface-container-high flex items-center justify-center text-on-surface hover:text-primary transition active:scale-95 shadow-[0_2px_0_#0a0f0d]"
             aria-label="Back to activities"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <span className="material-symbols-outlined text-[20px]">arrow_back</span>
           </button>
           <div>
-            <h1 className="text-xl font-black tracking-tight text-gray-900">Photo Proof</h1>
-            <p className="text-xs text-gray-500">Live camera-only verification</p>
+            <h1 className="font-headline-md text-lg font-black tracking-tight text-primary uppercase">
+              Photo Proof
+            </h1>
+            <p className="font-body-md text-xs text-on-surface-variant">Live camera verification</p>
           </div>
         </div>
         <div className="flex items-center gap-1.5">
           <Link
             to="/admin/review"
-            className="text-[11px] font-bold text-eco-700 bg-eco-50 hover:bg-eco-100 border border-eco-200 px-2.5 py-1.5 rounded-xl transition flex items-center gap-1 shadow-2xs"
+            className="font-label-chunky text-[11px] font-bold text-primary-container bg-surface-container hover:bg-surface-container-high border border-primary-container/40 px-2.5 py-1.5 rounded-xl transition flex items-center gap-1 shadow-[0_2px_0_#0a0f0d]"
           >
-            <ShieldAlert className="w-3.5 h-3.5" />
+            <span className="material-symbols-outlined text-[16px]">shield</span>
             <span>Review Queue</span>
           </Link>
-          <div className="w-9 h-9 rounded-xl bg-eco-100 flex items-center justify-center text-eco-700 shadow-2xs">
-            <Camera className="w-5 h-5" />
-          </div>
         </div>
-      </div>
-
-      {/* Camera-Only Warning Banner */}
-      <div className="p-3.5 bg-amber-50 rounded-2xl border border-amber-200/80 flex items-start gap-3 shadow-2xs">
-        <ShieldAlert className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
-        <p className="text-[11px] text-amber-800 leading-relaxed">
-          <strong>Camera-only:</strong> Gallery and file uploads are disabled to prevent fraud. Snap a fresh live photo of your eco action.
-        </p>
       </div>
 
       {/* Selected Task Card / Switcher */}
       {selectedTask ? (
-        <div className="p-4 bg-white rounded-2xl border border-gray-100 shadow-xs flex items-center justify-between gap-3">
+        <div className="p-4 bg-surface-container rounded-2xl border border-surface-container-high shadow-lg flex items-center justify-between gap-3 border-b-4 border-surface-container-lowest">
           <div className="flex items-center gap-3">
-            <div className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-eco-50 flex items-center justify-center text-2xl shrink-0 shadow-inner">
+            <div className="w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl bg-primary-container/20 text-primary-container flex items-center justify-center text-2xl shrink-0 shadow-inner border border-primary-container/30">
               {selectedTask.icon || (selectedTask.type === 'challenge' ? '🔥' : '🌱')}
             </div>
             <div className="space-y-0.5">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-eco-700">
+              <span className="font-label-chunky text-[10px] font-bold uppercase tracking-wider text-primary-fixed-dim">
                 {selectedTask.type === 'challenge' ? 'Daily Challenge' : 'Daily Activity'}
               </span>
-              <h2 className="font-bold text-sm text-gray-900 leading-snug line-clamp-1">
+              <h2 className="font-title-md text-sm text-primary font-bold leading-snug line-clamp-1 uppercase">
                 {selectedTask.title}
               </h2>
-              <p className="text-[11px] font-extrabold text-eco-600">
+              <p className="font-label-mono-num text-[11px] font-black text-primary-container">
                 +{selectedTask.points} Eco Points
               </p>
             </div>
@@ -197,20 +174,20 @@ export default function Proof() {
               </select>
               <button
                 type="button"
-                className="text-xs font-bold text-gray-500 bg-gray-50 hover:bg-gray-100 px-2.5 py-1.5 rounded-xl border border-gray-200 flex items-center gap-1"
+                className="font-label-chunky text-xs font-bold text-on-surface-variant bg-surface-container-high hover:bg-surface-container-highest px-2.5 py-1.5 rounded-xl border border-surface-container-highest flex items-center gap-1 shadow-[0_2px_0_#0a0f0d]"
               >
                 <span>Change</span>
-                <ChevronDown className="w-3.5 h-3.5" />
+                <span className="material-symbols-outlined text-[16px]">expand_more</span>
               </button>
             </div>
           )}
         </div>
       ) : (
-        <div className="p-4 bg-white rounded-2xl border border-gray-100 text-center space-y-2">
-          <p className="text-xs text-gray-500">Please choose an activity first</p>
+        <div className="p-4 bg-surface-container rounded-2xl border border-surface-container-high text-center space-y-2">
+          <p className="font-body-md text-xs text-on-surface-variant">Please choose an activity first</p>
           <Link
             to="/activities"
-            className="inline-block px-4 py-2 bg-eco-600 text-white rounded-xl text-xs font-bold"
+            className="inline-block px-4 py-2 bg-primary-container text-on-primary-fixed font-label-chunky rounded-xl text-xs font-bold uppercase shadow-[0_3px_0_#2d5000]"
           >
             Browse Activities
           </Link>
@@ -226,43 +203,41 @@ export default function Proof() {
 
       {/* Bottom Sheet for Confirmation & Submission */}
       {capturedPreview && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-xs transition-opacity animate-fade-in">
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/70 backdrop-blur-sm transition-opacity">
           <div
-            className="w-full max-w-md bg-white rounded-t-3xl shadow-2xl p-5 space-y-4 max-h-[85dvh] overflow-y-auto pb-[env(safe-area-inset-bottom,20px)] animate-slide-up"
+            className="w-full max-w-md bg-surface-container rounded-t-3xl shadow-2xl p-5 space-y-4 max-h-[85dvh] overflow-y-auto border-t-2 border-primary-container"
             style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 16px) + 20px)' }}
           >
-            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-              <h3 className="text-base font-extrabold text-gray-900">Confirm Photo Submission</h3>
+            <div className="flex items-center justify-between border-b border-surface-container-high pb-3">
+              <h3 className="font-title-md text-base font-extrabold text-primary uppercase">
+                Confirm Photo Submission
+              </h3>
               <button
                 type="button"
                 onClick={handleRetake}
-                className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:text-gray-800"
+                className="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant hover:text-on-surface"
               >
-                <X className="w-4 h-4" />
+                <span className="material-symbols-outlined text-[18px]">close</span>
               </button>
             </div>
 
             {/* Error Message in Sheet */}
             {submitError && (
-              <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-2xl flex items-start gap-2.5 text-xs text-rose-800">
-                <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
-                <div className="flex-1">
-                  <p className="font-bold">Submission Failed</p>
-                  <p className="text-[11px] text-rose-700">{submitError}</p>
-                </div>
+              <div className="p-3 bg-error-container/20 border border-error rounded-xl text-xs text-error font-bold">
+                {submitError}
               </div>
             )}
 
             {/* Confirmation Dialog on Success */}
             {submitSuccess ? (
-              <div className="p-6 text-center space-y-3 bg-emerald-50 rounded-2xl border border-emerald-200">
-                <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-inner">
-                  <CheckCircle2 className="w-7 h-7" />
+              <div className="p-6 text-center space-y-3 bg-primary-container/10 rounded-2xl border border-primary-container">
+                <div className="w-12 h-12 rounded-full bg-primary-container text-on-primary-fixed flex items-center justify-center mx-auto shadow-inner">
+                  <span className="material-symbols-outlined text-[28px] font-black">check</span>
                 </div>
-                <h4 className="text-base font-black text-emerald-950">
-                  Proof Submitted Successfully!
+                <h4 className="font-headline-md text-base font-black text-primary uppercase">
+                  Proof Submitted!
                 </h4>
-                <p className="text-xs text-emerald-800 leading-relaxed max-w-xs mx-auto">
+                <p className="font-body-md text-xs text-on-surface-variant leading-relaxed max-w-xs mx-auto">
                   Your photo proof has been logged with status <strong>Pending</strong>. An admin will review it within <strong>24 hours</strong> to credit your <strong>+{selectedTask?.points} Eco Points</strong>.
                 </p>
                 <button
@@ -271,7 +246,7 @@ export default function Proof() {
                     handleRetake();
                     navigate('/activities');
                   }}
-                  className="w-full min-h-[44px] py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-xs"
+                  className="w-full min-h-[44px] py-2.5 px-4 bg-primary-container text-on-primary-fixed rounded-xl font-label-chunky text-xs uppercase font-extrabold transition shadow-[0_3px_0_#2d5000]"
                 >
                   Back to Activities
                 </button>
@@ -279,45 +254,37 @@ export default function Proof() {
             ) : (
               <>
                 {/* Task & Photo Summary */}
-                <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl border border-gray-100">
+                <div className="flex items-center gap-3 p-3 bg-surface-container-low rounded-2xl border border-surface-container-high">
                   <img
                     src={capturedPreview}
                     alt="Captured proof"
-                    className="w-16 h-16 rounded-xl object-cover border border-gray-200 shrink-0"
+                    className="w-16 h-16 rounded-xl object-cover border border-surface-container-high shrink-0"
                   />
                   <div className="space-y-0.5">
-                    <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                    <p className="font-label-chunky text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">
                       Selected Task
                     </p>
-                    <h4 className="text-xs font-bold text-gray-900 leading-snug">
+                    <h4 className="font-title-md text-xs font-bold text-primary uppercase leading-snug">
                       {selectedTask?.title}
                     </h4>
-                    <span className="text-[11px] font-black text-eco-700">
+                    <span className="font-label-mono-num text-[11px] font-black text-primary-container">
                       +{selectedTask?.points} Points to be awarded
                     </span>
                   </div>
                 </div>
 
-                <div className="text-[11px] text-gray-500 space-y-1">
-                  <p>• Make sure the photo clearly demonstrates the completed task.</p>
-                  <p>• Only 1 submission allowed per task per day.</p>
-                </div>
-
-                {/* Submit Action Button */}
+                {/* Submit Action Button with Tactile Extrusion */}
                 <button
                   type="button"
                   disabled={isSubmitting}
                   onClick={handleSubmitProof}
-                  className="w-full min-h-[48px] py-3 px-4 bg-eco-600 hover:bg-eco-700 text-white rounded-2xl text-sm font-bold flex items-center justify-center gap-2 transition shadow-md active:scale-[0.98] disabled:opacity-50"
+                  className="w-full min-h-[48px] py-3 px-4 bg-primary-container text-on-primary-fixed rounded-2xl font-label-chunky text-sm font-extrabold uppercase flex items-center justify-center gap-2 shadow-[0_4px_0_#2d5000] active:translate-y-1 active:shadow-none transition-all cursor-pointer disabled:opacity-50"
                 >
                   {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>Uploading Proof...</span>
-                    </>
+                    <span>Uploading Proof...</span>
                   ) : (
                     <>
-                      <CheckCircle2 className="w-5 h-5" />
+                      <span className="material-symbols-outlined text-[20px]">check</span>
                       <span>Submit for Admin Review</span>
                     </>
                   )}
@@ -329,7 +296,7 @@ export default function Proof() {
       )}
 
       {/* Submissions History Section */}
-      <div className="pt-2 border-t border-gray-100">
+      <div className="pt-2 border-t border-surface-container-high">
         <MySubmissions
           submissions={submissions}
           onResubmit={handleResubmitFromHistory}
