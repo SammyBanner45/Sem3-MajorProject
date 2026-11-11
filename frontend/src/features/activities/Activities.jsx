@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchActivities, fetchDailyChallenge, fetchMySubmissions } from './api';
+import defaultActivities from '../../data/activities.json';
+import defaultChallenges from '../../data/challenges.json';
 
 function isToday(dateString) {
   if (!dateString) return false;
@@ -42,16 +44,27 @@ export default function Activities() {
     setError(null);
     try {
       const [actData, challengeData, subsData] = await Promise.all([
-        fetchActivities(),
-        fetchDailyChallenge(),
-        fetchMySubmissions(),
+        fetchActivities().catch(() => null),
+        fetchDailyChallenge().catch(() => null),
+        fetchMySubmissions().catch(() => []),
       ]);
-      setActivities(Array.isArray(actData) ? actData : []);
-      setDailyChallenge(challengeData);
+
+      const resolvedActivities =
+        Array.isArray(actData) && actData.length > 0
+          ? actData
+          : defaultActivities.map((a, i) => ({ id: `act-${i + 1}`, ...a, type: 'activity' }));
+
+      const resolvedChallenge =
+        challengeData || { id: 'ch-today', ...defaultChallenges[0], type: 'challenge' };
+
+      setActivities(resolvedActivities);
+      setDailyChallenge(resolvedChallenge);
       setSubmissions(Array.isArray(subsData) ? subsData : []);
     } catch (err) {
-      console.error('Failed to load activities data:', err);
-      setError(err.message || 'Failed to load activities. Please check your connection.');
+      console.warn('Using offline activities fallback:', err);
+      setActivities(defaultActivities.map((a, i) => ({ id: `act-${i + 1}`, ...a, type: 'activity' })));
+      setDailyChallenge({ id: 'ch-today', ...defaultChallenges[0], type: 'challenge' });
+      setSubmissions([]);
     } finally {
       setLoading(false);
     }

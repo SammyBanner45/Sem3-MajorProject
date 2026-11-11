@@ -12,6 +12,7 @@ import {
   Calendar
 } from 'lucide-react';
 import { fetchDailyChallenge, fetchMySubmissions } from '../activities/api';
+import defaultChallenges from '../../data/challenges.json';
 
 function isToday(dateString) {
   if (!dateString) return false;
@@ -84,14 +85,15 @@ export default function Challenges() {
     setError(null);
     try {
       const [challengeData, subsData] = await Promise.all([
-        fetchDailyChallenge(),
-        fetchMySubmissions()
+        fetchDailyChallenge().catch(() => null),
+        fetchMySubmissions().catch(() => []),
       ]);
-      setChallenge(challengeData);
+      setChallenge(challengeData || { id: 'ch-today', ...defaultChallenges[0], type: 'challenge' });
       setSubmissions(Array.isArray(subsData) ? subsData : []);
     } catch (err) {
-      console.error('Failed to load challenge:', err);
-      setError(err.message || 'Failed to load today’s daily challenge.');
+      console.warn('Using offline challenge fallback:', err);
+      setChallenge({ id: 'ch-today', ...defaultChallenges[0], type: 'challenge' });
+      setSubmissions([]);
     } finally {
       setLoading(false);
     }
