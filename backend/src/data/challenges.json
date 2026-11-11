@@ -82,5 +82,11 @@
     "description": "Clock at least 10 kilometers of cycling in a single day for exercise and clean mobility.",
     "icon": "🚴",
     "points": 60
+  },
+  {
+    "title": "Plastic-Free Grocery Run",
+    "description": "Purchase all groceries and produce completely loose or in cloth tote bags without any single-use plastic wrap.",
+    "icon": "🥕",
+    "points": 45
   }
 ]
