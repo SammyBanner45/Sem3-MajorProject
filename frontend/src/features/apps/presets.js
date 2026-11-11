@@ -4,5 +4,7 @@ export const appPresets = [
   { name: 'Rapido', category: 'travel', icon: '🏍️', url: 'https://www.rapido.bike/' },
   { name: 'Zomato', category: 'food', icon: '🍽️', url: 'https://www.zomato.com/' },
   { name: 'Swiggy', category: 'food', icon: '🍔', url: 'https://www.swiggy.com/' },
-  { name: 'Zepto', category: 'grocery', icon: '🛒', url: 'https://www.zeptonow.com/' }
+  { name: 'Zepto', category: 'grocery', icon: '🛒', url: 'https://www.zeptonow.com/' },
+  { name: 'Blinkit', category: 'grocery', icon: '🟡', url: 'https://blinkit.com/' },
+  { name: 'Instamart', category: 'grocery', icon: '🛍️', url: 'https://www.swiggy.com/instamart' }
 ];

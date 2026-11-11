@@ -26,9 +26,11 @@ function errorHandler(error, req, res, next) {
   console.error('Unhandled request error:', {
     name: error?.name || 'Error',
     code: error?.code,
+    message: error?.message,
+    stack: error?.stack,
   });
   return res.status(500).json({
-    error: { code: 'INTERNAL_ERROR', message: 'An unexpected error occurred.' },
+    error: { code: 'INTERNAL_ERROR', message: error?.message || 'An unexpected error occurred.' },
   });
 }
 

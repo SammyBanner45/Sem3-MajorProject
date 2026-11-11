@@ -162,6 +162,7 @@ enum UserAppCategory {
 enum Co2LogType {
   travel
   food
+  grocery
 }
 
 enum Co2LogStatus {

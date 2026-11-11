@@ -53,7 +53,8 @@ export type UserAppCategory = (typeof UserAppCategory)[keyof typeof UserAppCateg
 
 export const Co2LogType = {
   travel: 'travel',
-  food: 'food'
+  food: 'food',
+  grocery: 'grocery'
 } as const
 
 export type Co2LogType = (typeof Co2LogType)[keyof typeof Co2LogType]
