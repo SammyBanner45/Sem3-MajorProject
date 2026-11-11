@@ -1,8 +1,8 @@
 const factors = require('../../../frontend/src/data/emissionFactors.json');
 const prisma = require('../lib/prisma');
-const { calculateFood, calculateSavings, calculateTravel } = require('../services/co2Calculator');
+const { calculateFood, calculateGrocery, calculateSavings, calculateTravel } = require('../services/co2Calculator');
 const { awardWithinDailyCap, canAddTravelLog, foodPoints, isDuplicateTrip, kolkataDayBounds } = require('../services/co2Rules');
-const { getDistance } = require('../services/distance');
+const { getDistance, searchPlaces } = require('../services/distance');
 
 const vehicles = Object.keys(factors.travel);
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -103,6 +103,24 @@ async function logFood(req, res, next) {
   } catch (error) { return next(error); }
 }
 
+async function saveGrocery(req, res, next) {
+  try {
+    const { basketSize, productType, animalProducts, bagType } = req.body || {};
+    const co2Kg = calculateGrocery({ basketSize, productType, animalProducts, bagType });
+    const log = await prisma.co2Log.create({ data: {
+      userId: req.user.id,
+      type: 'grocery',
+      status: 'logged',
+      co2Kg,
+      savedKg: 0,
+      pointsEarned: 0,
+      details: { basketSize, productType, animalProducts, bagType, approximate: true },
+      loggedAt: new Date()
+    } });
+    return res.status(201).json({ log, co2Kg, approximate: true });
+  } catch (error) { return next(error); }
+}
+
 async function listLogs(req, res, next) {
   try {
     const where = { userId: req.user.id };
@@ -121,9 +139,19 @@ async function summary(req, res, next) {
       result.totalKg += log.co2Kg;
       result[`${log.type}Kg`] += log.co2Kg;
       return result;
-    }, { totalKg: 0, travelKg: 0, foodKg: 0 });
+    }, { totalKg: 0, travelKg: 0, foodKg: 0, groceryKg: 0 });
     return res.json({ ...totals, logCount: logs.length });
   } catch (error) { return next(error); }
 }
 
-module.exports = { estimateTravel, saveTravel, createPendingFood, logFood, listLogs, summary };
+async function searchLocations(req, res, next) {
+  try {
+    const q = req.query.q || '';
+    const results = await searchPlaces(q);
+    return res.json(results);
+  } catch (error) {
+    return next(error);
+  }
+}
+
+module.exports = { estimateTravel, saveTravel, createPendingFood, logFood, saveGrocery, listLogs, summary, searchLocations };

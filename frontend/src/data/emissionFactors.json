@@ -14,5 +14,13 @@
     "nonVegItem": { "unit": "kg CO2e/item", "value": 2.5, "source": "verify" },
     "deliveryVehicle": { "unit": "kg CO2e/km", "value": 0.192, "source": "verify" },
     "packaging": { "unit": "kg CO2e/order", "value": 0.1, "source": "verify" }
+  },
+  "grocery": {
+    "basketBaseKg": { "small": 1.5, "medium": 3.0, "large": 5.0 },
+    "productTypeMultiplier": { "fresh": 0.8, "mix": 1.0, "packaged": 1.2 },
+    "animalProductsAddKg": 1.5,
+    "bagKg": { "plastic": 0.05, "paper": 0.08, "none": 0 },
+    "fixedDeliveryKg": 0.2,
+    "source": "add the report or dataset name here"
   }
 }

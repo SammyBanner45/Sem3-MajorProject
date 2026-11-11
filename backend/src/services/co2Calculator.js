@@ -53,4 +53,42 @@ function calculateFood({ items, isVeg, deliveryKm = 0, packaging = false }) {
   return itemCount * itemFactor.value + deliveryEmissions + packagingEmissions;
 }
 
-module.exports = { POINTS_PER_KG, calculateTravel, calculateSavings, calculateFood };
+/**
+ * calculateGrocery — pure function, easy to unit-test with mock orders.
+ *
+ * @param {object} order
+ * @param {'small'|'medium'|'large'} order.basketSize
+ * @param {'fresh'|'mix'|'packaged'}  order.productType
+ * @param {boolean}                   order.animalProducts  - includes meat / dairy / eggs
+ * @param {'plastic'|'paper'|'none'}  order.bagType
+ * @returns {number} co2Kg (rounded to 3 dp)
+ *
+ * Formula:
+ *   co2 = basketBaseKg[size] * productTypeMultiplier[type]
+ *         + (animalProducts ? animalProductsAddKg : 0)
+ *         + bagKg[bag]
+ *         + fixedDeliveryKg
+ */
+function calculateGrocery({ basketSize, productType, animalProducts, bagType }) {
+  const g = factors.grocery;
+
+  const base = g.basketBaseKg[basketSize];
+  if (base === undefined) throw new RangeError(`Unknown basketSize: ${basketSize}`);
+
+  const multiplier = g.productTypeMultiplier[productType];
+  if (multiplier === undefined) throw new RangeError(`Unknown productType: ${productType}`);
+
+  const bagEmissions = g.bagKg[bagType];
+  if (bagEmissions === undefined) throw new RangeError(`Unknown bagType: ${bagType}`);
+
+  if (typeof animalProducts !== 'boolean') throw new TypeError('animalProducts must be a boolean');
+
+  const co2Kg = base * multiplier
+    + (animalProducts ? g.animalProductsAddKg : 0)
+    + bagEmissions
+    + g.fixedDeliveryKg;
+
+  return Math.round(co2Kg * 1000) / 1000;
+}
+
+module.exports = { POINTS_PER_KG, calculateTravel, calculateSavings, calculateFood, calculateGrocery };

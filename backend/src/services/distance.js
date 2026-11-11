@@ -22,17 +22,42 @@ function scheduleNominatimRequest(request) {
 }
 
 async function geocode(location) {
+  // If coordinates are already provided as "lat, lon", skip API geocoding
+  const coords = parseCoordinatePair(location);
+  if (coords) return coords;
+
   const url = new URL(NOMINATIM_URL);
   url.searchParams.set('q', location);
   url.searchParams.set('format', 'jsonv2');
-  url.searchParams.set('limit', '1');
+  url.searchParams.set('limit', '5');
+  url.searchParams.set('countrycodes', 'in');
 
   const response = await scheduleNominatimRequest(() => fetch(url, {
     headers: { 'User-Agent': USER_AGENT, Accept: 'application/json' }
   }));
   if (!response.ok) throw new Error(`Nominatim returned ${response.status}`);
 
-  const results = await response.json();
+  let results = await response.json();
+
+  // If exact long string failed, try with first 3 comma-separated terms (e.g. "Salt Lake Sector V, Bidhannagar, Kolkata")
+  if ((!Array.isArray(results) || !results[0]) && location.includes(',')) {
+    const simplified = location.split(',').slice(0, 3).join(',').trim();
+    if (simplified && simplified !== location) {
+      const fallbackUrl = new URL(NOMINATIM_URL);
+      fallbackUrl.searchParams.set('q', simplified);
+      fallbackUrl.searchParams.set('format', 'jsonv2');
+      fallbackUrl.searchParams.set('limit', '5');
+      fallbackUrl.searchParams.set('countrycodes', 'in');
+
+      const fallbackRes = await scheduleNominatimRequest(() => fetch(fallbackUrl, {
+        headers: { 'User-Agent': USER_AGENT, Accept: 'application/json' }
+      }));
+      if (fallbackRes.ok) {
+        results = await fallbackRes.json();
+      }
+    }
+  }
+
   if (!Array.isArray(results) || !results[0]) throw new Error(`Location not found: ${location}`);
 
   return { latitude: Number(results[0].lat), longitude: Number(results[0].lon) };
@@ -92,4 +117,27 @@ async function getDistance(origin, destination) {
   }
 }
 
-module.exports = { getDistance, geocode, haversineKm };
+async function searchPlaces(query) {
+  if (!query || typeof query !== 'string' || !query.trim()) return [];
+  const url = new URL(NOMINATIM_URL);
+  url.searchParams.set('q', query.trim());
+  url.searchParams.set('format', 'jsonv2');
+  url.searchParams.set('limit', '5');
+  url.searchParams.set('countrycodes', 'in');
+
+  const response = await scheduleNominatimRequest(() => fetch(url, {
+    headers: { 'User-Agent': USER_AGENT, Accept: 'application/json' }
+  }));
+  if (!response.ok) return [];
+
+  const results = await response.json();
+  if (!Array.isArray(results)) return [];
+
+  return results.map((item) => ({
+    displayName: item.display_name,
+    latitude: Number(item.lat),
+    longitude: Number(item.lon)
+  }));
+}
+
+module.exports = { getDistance, geocode, searchPlaces, haversineKm };

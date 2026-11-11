@@ -47,10 +47,12 @@ export const appsApi = {
 };
 
 export const co2Api = {
+  searchLocations: (q) => apiRequest(`/api/co2/locations?q=${encodeURIComponent(q)}`),
   estimateTravel: (data) => apiRequest('/api/co2/travel/estimate', { method: 'POST', body: JSON.stringify(data) }),
   saveTravel: (data) => apiRequest('/api/co2/travel', { method: 'POST', body: JSON.stringify(data) }),
   pendingFood: (data) => apiRequest('/api/co2/food/pending', { method: 'POST', body: JSON.stringify(data) }),
   logFood: (id, data) => apiRequest(`/api/co2/food/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+  saveGrocery: (data) => apiRequest('/api/co2/grocery', { method: 'POST', body: JSON.stringify(data) }),
   logs: (status) => apiRequest(`/api/co2/logs${status ? `?status=${encodeURIComponent(status)}` : ''}`),
   summary: () => apiRequest('/api/co2/summary')
 };

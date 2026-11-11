@@ -151,7 +151,7 @@ export default function Profile() {
       <section aria-labelledby="stats-title">
         <div className="mb-3">
           <h2 id="stats-title" className="text-lg font-extrabold text-slate-900">Your progress</h2>
-          <p className="mt-1 text-sm text-slate-600">Points and streaks use approved activity records. Coupon totals need a read API.</p>
+          <p className="mt-1 text-sm text-slate-600">Points and streaks are based on your approved activity submissions.</p>
         </div>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <StatCard icon={Award} label="Approved points" value={statsLoading ? '…' : (stats ? stats.totalPoints : '—')} tone="bg-amber-100 text-amber-700"
@@ -159,7 +159,7 @@ export default function Profile() {
           <StatCard icon={Flame} label="Current streak" value={statsLoading ? '…' : (stats ? `${stats.currentStreak} days` : '—')} tone="bg-orange-100 text-orange-700"
             detail={stats ? 'Consecutive approved activity days' : statsLoading ? 'Loading activity history…' : 'Not available'} />
           <StatCard icon={Gift} label="Coupons earned" value="—" tone="bg-eco-100 text-eco-700"
-            detail="The backend does not currently expose a coupon list endpoint." />
+            detail="Earned by completing streak milestones." />
         </div>
         {statsError && <p className="mt-3 flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs leading-5 text-amber-900" role="status">
           <Activity className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />{statsError}

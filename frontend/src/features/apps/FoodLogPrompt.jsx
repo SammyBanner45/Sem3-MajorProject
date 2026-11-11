@@ -60,7 +60,7 @@ export default function FoodLogPrompt({ pendingLog, onClose, onLogged }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-end bg-slate-950/40" role="dialog" aria-modal="true" aria-labelledby="food-log-title">
-      <form onSubmit={submit} className="max-h-[92dvh] w-full overflow-y-auto rounded-t-3xl bg-white p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] shadow-xl">
+      <form onSubmit={submit} className="max-h-[92dvh] w-full overflow-y-auto rounded-t-3xl bg-white p-5 pb-[calc(5rem+env(safe-area-inset-bottom))] shadow-xl">
         <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-slate-200" />
         <div className="flex items-start justify-between gap-3"><div><p className="text-sm font-medium text-emerald-700">Order reminder</p><h2 id="food-log-title" className="mt-1 text-xl font-bold text-slate-900">Log your food order?</h2></div><button type="button" onClick={dismiss} className="min-h-11 min-w-11 rounded-full text-2xl text-slate-500" aria-label="Close">×</button></div>
         {result === null ? <>

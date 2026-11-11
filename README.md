@@ -343,7 +343,14 @@ The App Launcher uses a self-reported estimate model: **1 point = 1 kg CO₂e sa
 
 All factors are labelled estimates and include a `verify` source marker where the project still needs validation. Points are stored as `Float` values and rounded only for display. The CO₂ models are owned by Member 3 and cascade when the related profile is deleted.
 
-The points dashboard exposes `/api/points/summary`, `/api/points/history`, and `/api/points/ledger`. The demo marketplace exposes `/api/rewards` and wallet endpoints; all offers are fictional, tagged `demo`, and use the same user-scoped points balance. Profile integrations can use the exported `TopBarPills`, `MonthBars`, and `FootprintTab` components from `frontend/src/features/apps/`.
+The points dashboard exposes `/api/points/summary`, `/api/points/history`, and `/api/points/ledger`. The demo marketplace exposes `/api/rewards` and wallet endpoints; all offers are fictional, tagged `demo`, and use the same user-scoped points balance.
+
+**UI Integration & Real-Time Telemetry:**
+- **Persistent Header Telemetry (`TopBarPills`):** Embedded directly into the global sticky navbar (`AppShell`), displaying the user's live points balance and monthly emitted CO₂e across all views with click-through navigation to detailed footprint stats.
+- **Personal Profile Summary (`Co2SummarySlot`):** Connected to `/api/co2/summary` on the user's profile, providing live telemetry across total, travel, and food emissions.
+- **Monthly Goal Progress (`MonthBars`):** Featured on the Home dashboard with live real-time synchronization via the `ecosync:points-updated` event, tracking saved vs. emitted emissions against the monthly target.
+- **Footprint Breakdown (`FootprintTab`):** Provides interactive monthly and all-time comparisons with past 6-month historical trends.
+- **Green Marketplace (In-App Store):** A preview section on the App Launcher page surfaces the top reward offers from the demo marketplace, with direct navigation to the full rewards store. Built and owned by Member 3.
 
 The exact Prisma additions for the shared schema are:
 
@@ -423,6 +430,8 @@ The project is divided into three independent modules so each member can develop
 - Allow users to optionally log order details after returning to the website.
 - Calculate estimated CO₂ emissions using average emission factors and the information provided.
 - Save and display the user's CO₂ logs through the backend API.
+- Maintain real-time telemetry updates across the global navigation bar (`TopBarPills`), Home screen (`MonthBars`), and Profile summary (`Co2SummarySlot`).
+- ✅ **Green Marketplace (In-App Store):** Added a rewards preview section to the App Launcher page, displaying the top 3 available offers from the demo marketplace with one-tap access to the full rewards store. Built and owned by Member 3 (Sambuddha Banerjee).
 
 **Independent testing:** Use sample locations, predefined emission factors, and mock order details without depending on the activities or rewards modules.
 
