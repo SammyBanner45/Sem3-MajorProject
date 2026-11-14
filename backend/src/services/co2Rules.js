@@ -8,6 +8,24 @@ function kolkataDateKey(date = new Date()) {
   }).format(date);
 }
 
+function localDayBounds(date = new Date(), timeZone = 'Asia/Kolkata') {
+  let key;
+  try { key = new Intl.DateTimeFormat('en-CA', { timeZone, year: 'numeric', month: '2-digit', day: '2-digit' }).format(date); }
+  catch { throw new TypeError('Invalid local time zone'); }
+  const [year, month, day] = key.split('-').map(Number);
+  const startUtc = Date.UTC(year, month - 1, day);
+  const offsetAt = (instant) => {
+    const parts = new Intl.DateTimeFormat('en-US', { timeZone, timeZoneName: 'longOffset' }).formatToParts(instant);
+    const offset = parts.find((part) => part.type === 'timeZoneName')?.value || 'GMT+00:00';
+    const match = /GMT([+-])(\d{2}):(\d{2})/.exec(offset);
+    return match ? (match[1] === '-' ? -1 : 1) * (Number(match[2]) * 60 + Number(match[3])) * 60000 : 0;
+  };
+  const start = new Date(startUtc - offsetAt(new Date(startUtc)));
+  const next = new Date(startUtc + 86400000);
+  const end = new Date(startUtc + 86400000 - offsetAt(next));
+  return { start, end };
+}
+
 function kolkataDayBounds(date = new Date()) {
   const key = kolkataDateKey(date);
   const start = new Date(`${key}T00:00:00${KOLKATA_OFFSET}`);
@@ -58,8 +76,10 @@ function isDuplicateTrip(trips, trip) {
     && (candidate.details?.chosenVehicle || candidate.details?.vehicle) === trip.chosenVehicle);
 }
 
+function canAddCategoryLog(count) { return Number.isInteger(count) && count < 10; }
+
 function canAddTravelLog(travelLogCount) {
   return Number.isInteger(travelLogCount) && travelLogCount < MAX_TRAVEL_LOGS_PER_DAY;
 }
 
-module.exports = { DAILY_POINTS_CAP, MAX_TRAVEL_LOGS_PER_DAY, awardWithinDailyCap, canAddTravelLog, foodPoints, isDuplicateTrip, kolkataDateKey, kolkataDayBounds, kolkataMonthBounds, kolkataMonthKey, remainingDailyPoints };
+module.exports = { DAILY_POINTS_CAP, MAX_TRAVEL_LOGS_PER_DAY, awardWithinDailyCap, canAddCategoryLog, canAddTravelLog, localDayBounds, foodPoints, isDuplicateTrip, kolkataDateKey, kolkataDayBounds, kolkataMonthBounds, kolkataMonthKey, remainingDailyPoints };

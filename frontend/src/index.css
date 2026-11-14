@@ -2,14 +2,33 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --eco-bg: #0f1512;
+  --eco-surface: #171d1a;
+  --eco-surface-raised: #1b211e;
+  --eco-surface-high: #252b28;
+  --eco-text: #dee4df;
+  --eco-muted: #aeb8b0;
+  --eco-mint: #a3f542;
+  --eco-mint-dim: #8cdc27;
+  --eco-border: #414a36;
+  --eco-emitted: #9ca3af;
+  --eco-radius-card: 1.25rem;
+  --eco-radius-control: 0.75rem;
+  --eco-shadow-card: 0 4px 0 #0a0f0d;
+  --eco-space-page: 1rem;
+  --eco-font-body: 'Plus Jakarta Sans', sans-serif;
+  --eco-font-display: 'Outfit', sans-serif;
+}
+
 @layer base {
   html, body {
     width: 100vw;
     margin: 0;
     padding: 0;
-    background-color: #0f1512;
-    color: #dee4df;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: var(--eco-bg);
+    color: var(--eco-text);
+    font-family: var(--eco-font-body);
     overscroll-behavior: none;
     -webkit-tap-highlight-color: transparent;
   }
@@ -22,6 +41,17 @@
     padding-top: env(safe-area-inset-top, 0px);
   }
 }
+
+.bg-app { background-color: var(--eco-bg); }
+.shadow-card { box-shadow: var(--eco-shadow-card); }
+.rounded-card { border-radius: var(--eco-radius-card); }
+.app-topbar { color: var(--eco-text); }
+.app-bottom-nav { background: color-mix(in srgb, var(--eco-bg) 95%, transparent); border-color: var(--eco-border); box-shadow: 0 -8px 24px rgb(0 0 0 / 35%); }
+.nav-item { display:flex; min-height:44px; flex-direction:column; align-items:center; justify-content:center; gap:.2rem; border-radius:var(--eco-radius-control); padding:.25rem; color:var(--eco-muted); font-family:var(--eco-font-display); font-size:.625rem; font-weight:600; transition:color .15s ease; }
+.nav-item-active { color:var(--eco-mint); }
+.camera-nav-button { background:var(--eco-mint); color:#0f2000; box-shadow:0 0 20px rgb(163 245 66 / 24%), var(--eco-shadow-card); }
+.metric-pill-saved, .metric-card-saved { border-color:rgb(163 245 66 / 35%); background:var(--eco-surface); color:var(--eco-mint); }
+.metric-pill-emitted, .metric-card-emitted { border-color:rgb(156 163 175 / 30%); background:var(--eco-surface); color:var(--eco-emitted); }
 
 /* Hide scrollbars for clean arcade pill rows */
 .no-scrollbar::-webkit-scrollbar {
