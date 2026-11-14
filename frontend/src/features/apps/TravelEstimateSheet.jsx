@@ -169,21 +169,21 @@ export default function TravelEstimateSheet({ app, onClose }) {
   const emissions = estimate?.emissions || {};
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end bg-slate-950/40" role="dialog" aria-modal="true" aria-labelledby="travel-estimate-title">
-      <div className="max-h-[92dvh] w-full overflow-y-auto rounded-t-3xl bg-white p-5 pb-[calc(5rem+env(safe-area-inset-bottom))] shadow-xl">
-        <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-slate-200" />
+    <div className="fixed inset-0 z-50 flex items-end bg-black/70 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="travel-estimate-title">
+      <div className="max-h-[92dvh] w-full overflow-y-auto rounded-t-3xl border border-[#26332e] bg-[#151b19] p-5 pb-[calc(5rem+env(safe-area-inset-bottom))] text-white shadow-2xl">
+        <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-[#3b4842]" />
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="text-sm font-medium text-emerald-700">Travel estimate</p>
-            <h2 id="travel-estimate-title" className="mt-1 text-xl font-bold text-slate-900">Before opening {app.name}</h2>
+            <p className="text-sm font-semibold text-[#a3f542]">Travel estimate</p>
+            <h2 id="travel-estimate-title" className="mt-1 text-xl font-bold text-[#f1f5f2]">Before opening {app.name}</h2>
           </div>
-          <button type="button" onClick={onClose} className="min-h-11 min-w-11 rounded-full text-2xl text-slate-500" aria-label="Close">×</button>
+          <button type="button" onClick={onClose} className="min-h-11 min-w-11 rounded-full text-2xl text-[#aeb8b0] hover:bg-[#26332e]" aria-label="Close">×</button>
         </div>
 
         <div className="mt-5 space-y-4">
           {/* Pickup Input with Suggestion Dropdown */}
           <div className="relative">
-            <label htmlFor="travel-pickup" className="text-sm font-semibold text-slate-700">Pickup</label>
+            <label htmlFor="travel-pickup" className="text-sm font-semibold text-[#d7dfd8]">Pickup</label>
             <div className="mt-1 flex gap-2">
               <input
                 id="travel-pickup"
@@ -192,22 +192,22 @@ export default function TravelEstimateSheet({ app, onClose }) {
                 onFocus={() => setShowPickupList(true)}
                 placeholder="Enter pickup place (e.g. Salt Lake, Kolkata)"
                 autoComplete="off"
-                className="min-h-12 min-w-0 flex-1 rounded-xl border border-slate-200 px-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+                className="min-h-12 min-w-0 flex-1 rounded-xl border border-[#3b4842] bg-[#0f1512] px-3 text-sm text-white placeholder:text-[#77847a] focus:border-[#a3f542] focus:outline-none focus:ring-2 focus:ring-[#a3f542]/20"
               />
               <button
                 type="button"
                 onClick={useCurrentLocation}
-                className="flex items-center gap-1 rounded-xl border border-emerald-200 bg-emerald-50 px-3 text-xs font-bold text-emerald-700 hover:bg-emerald-100"
+                className="flex items-center gap-1 rounded-xl border border-[#a3f542]/40 bg-[#26332e] px-3 text-xs font-bold text-[#a3f542] hover:bg-[#34443b]"
               >
                 <Navigation className="h-3.5 w-3.5" />
                 GPS
               </button>
             </div>
-            {locationMessage && <p className="mt-1 text-xs text-slate-500">{locationMessage}</p>}
+            {locationMessage && <p className="mt-1 text-xs text-[#aeb8b0]">{locationMessage}</p>}
 
             {/* Pickup Suggestions Popup */}
             {showPickupList && pickupSuggestions.length > 0 && (
-              <ul className="absolute z-30 mt-1 max-h-48 w-full overflow-y-auto rounded-xl border border-slate-200 bg-white p-1 shadow-lg">
+              <ul className="absolute z-30 mt-1 max-h-48 w-full overflow-y-auto rounded-xl border border-[#3b4842] bg-[#1b2320] p-1 shadow-lg">
                 {pickupSuggestions.map((item, idx) => (
                   <li key={idx}>
                     <button
@@ -217,9 +217,9 @@ export default function TravelEstimateSheet({ app, onClose }) {
                         setLocationMessage(item.displayName.split(',').slice(0, 2).join(','));
                         setShowPickupList(false);
                       }}
-                      className="flex w-full items-start gap-2 rounded-lg p-2 text-left text-xs text-slate-700 hover:bg-emerald-50 hover:text-emerald-900"
+                      className="flex w-full items-start gap-2 rounded-lg p-2 text-left text-xs text-[#d7dfd8] hover:bg-[#26332e] hover:text-[#a3f542]"
                     >
-                      <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />
+                      <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#a3f542]" />
                       <span className="line-clamp-2">{item.displayName}</span>
                     </button>
                   </li>
@@ -230,7 +230,7 @@ export default function TravelEstimateSheet({ app, onClose }) {
 
           {/* Drop Input with Suggestion Dropdown */}
           <div className="relative">
-            <label htmlFor="travel-drop" className="text-sm font-semibold text-slate-700">Drop</label>
+            <label htmlFor="travel-drop" className="text-sm font-semibold text-[#d7dfd8]">Drop</label>
             <input
               id="travel-drop"
               value={drop}
@@ -238,12 +238,12 @@ export default function TravelEstimateSheet({ app, onClose }) {
               onFocus={() => setShowDropList(true)}
               placeholder="Enter destination (e.g. Park Street, Kolkata)"
               autoComplete="off"
-              className="mt-1 min-h-12 w-full rounded-xl border border-slate-200 px-3 text-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-100"
+              className="mt-1 min-h-12 w-full rounded-xl border border-[#3b4842] bg-[#0f1512] px-3 text-sm text-white placeholder:text-[#77847a] focus:border-[#a3f542] focus:outline-none focus:ring-2 focus:ring-[#a3f542]/20"
             />
 
             {/* Drop Suggestions Popup */}
             {showDropList && dropSuggestions.length > 0 && (
-              <ul className="absolute z-30 mt-1 max-h-48 w-full overflow-y-auto rounded-xl border border-slate-200 bg-white p-1 shadow-lg">
+              <ul className="absolute z-30 mt-1 max-h-48 w-full overflow-y-auto rounded-xl border border-[#3b4842] bg-[#1b2320] p-1 shadow-lg">
                 {dropSuggestions.map((item, idx) => (
                   <li key={idx}>
                     <button
@@ -252,9 +252,9 @@ export default function TravelEstimateSheet({ app, onClose }) {
                         setDrop(`${item.latitude.toFixed(6)}, ${item.longitude.toFixed(6)}`);
                         setShowDropList(false);
                       }}
-                      className="flex w-full items-start gap-2 rounded-lg p-2 text-left text-xs text-slate-700 hover:bg-emerald-50 hover:text-emerald-900"
+                      className="flex w-full items-start gap-2 rounded-lg p-2 text-left text-xs text-[#d7dfd8] hover:bg-[#26332e] hover:text-[#a3f542]"
                     >
-                      <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />
+                      <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#a3f542]" />
                       <span className="line-clamp-2">{item.displayName}</span>
                     </button>
                   </li>
@@ -268,9 +268,9 @@ export default function TravelEstimateSheet({ app, onClose }) {
             type="button"
             onClick={handleCalculateRoute}
             disabled={loading || !pickup.trim() || !drop.trim()}
-            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 text-sm font-bold text-white shadow-xs transition hover:bg-slate-800 disabled:opacity-50"
+            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#26332e] px-4 text-sm font-bold text-white shadow-card transition hover:bg-[#34443b] disabled:opacity-50"
           >
-            <Calculator className="h-4 w-4 text-emerald-400" />
+            <Calculator className="h-4 w-4 text-[#a3f542]" />
             <span>{loading ? 'Calculating Route…' : 'Calculate Distance & CO₂'}</span>
           </button>
         </div>
@@ -281,8 +281,8 @@ export default function TravelEstimateSheet({ app, onClose }) {
         {estimate && !loading && (
           <div className="mt-5">
             <div className="flex items-center justify-between">
-              <h3 className="font-bold text-slate-900">Choose a vehicle</h3>
-              <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-800">
+              <h3 className="font-bold text-[#f1f5f2]">Choose a vehicle</h3>
+              <span className="rounded-full bg-[#26332e] px-2.5 py-0.5 text-xs font-bold text-[#a3f542]">
                 {estimate.distanceKm?.toFixed?.(1) || estimate.distanceKm} km
               </span>
             </div>
@@ -293,16 +293,16 @@ export default function TravelEstimateSheet({ app, onClose }) {
                   type="button"
                   onClick={() => setSelectedVehicle(vehicle)}
                   className={`flex min-h-16 w-full items-center justify-between rounded-xl border p-3 text-left transition ${
-                    selectedVehicle === vehicle ? 'border-emerald-500 bg-emerald-50' : 'border-slate-200 bg-white hover:border-slate-300'
+                    selectedVehicle === vehicle ? 'border-[#a3f542] bg-[#26332e]' : 'border-[#35413b] bg-[#1b2320] hover:border-[#66756c]'
                   }`}
                 >
                   <span>
-                    <span className="block font-semibold text-slate-900">{vehicleLabels[vehicle] || vehicle}</span>
-                    {vehicle === lowestVehicle && <span className="text-xs font-medium text-emerald-700">Lowest emission</span>}
+                    <span className="block font-semibold text-[#e1e8e2]">{vehicleLabels[vehicle] || vehicle}</span>
+                    {vehicle === lowestVehicle && <span className="text-xs font-medium text-[#a3f542]">Lowest emission</span>}
                   </span>
                   <span className="text-right">
-                    <span className="block font-bold text-slate-900">{Number(value).toFixed(3)} kg</span>
-                    {estimate.approximate && <span className="text-[11px] text-amber-700">Approximate</span>}
+                    <span className="block font-bold text-[#f1f5f2]">{Number(value).toFixed(3)} kg</span>
+                    {estimate.approximate && <span className="text-[11px] text-amber-300">Approximate</span>}
                   </span>
                 </button>
               ))}
@@ -310,25 +310,25 @@ export default function TravelEstimateSheet({ app, onClose }) {
           </div>
         )}
 
-        <p className="mt-5 text-xs leading-5 text-slate-500">Estimates use average emission factors and may differ from actual emissions.</p>
-        {saveError && <p className="mt-2 text-xs text-slate-500" role="status">{saveError}</p>}
+        <p className="mt-5 text-xs leading-5 text-[#aeb8b0]">Estimates use average emission factors and may differ from actual emissions.</p>
+        {saveError && <p className="mt-2 text-xs text-amber-200" role="status">{saveError}</p>}
         {saveResult && (
-          <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
-            <p className="text-sm font-bold text-emerald-800">{saveResult.capReached ? 'Daily limit reached (5 pts)' : `+${Number(saveResult.pointsEarned || 0).toFixed(2)} pts earned`}</p>
-            {saveResult.reason && <p className="mt-1 text-xs text-slate-600">{saveResult.reason}</p>}
-            <p className="mt-2 text-xs text-slate-600">Trip saved as an estimate.</p>
+          <div className="mt-4 rounded-2xl border border-[#a3f542]/30 bg-[#26332e] p-4">
+            <p className="text-sm font-bold text-[#a3f542]">{saveResult.capReached ? 'Daily limit reached (5 pts)' : `+${Number(saveResult.pointsEarned || 0).toFixed(2)} pts earned`}</p>
+            {saveResult.reason && <p className="mt-1 text-xs text-[#c2ccc4]">{saveResult.reason}</p>}
+            <p className="mt-2 text-xs text-[#c2ccc4]">Trip saved as an estimate.</p>
           </div>
         )}
 
         <div className="mt-4 flex gap-3">
-          <button type="button" onClick={onClose} className="min-h-12 flex-1 rounded-xl border border-slate-200 px-4 font-semibold text-slate-700 hover:bg-slate-50">
+          <button type="button" onClick={onClose} className="min-h-12 flex-1 rounded-xl border border-[#3b4842] px-4 font-semibold text-[#d7dfd8] hover:bg-[#1f2a26]">
             Close
           </button>
           <button
             type="button"
             onClick={continueToApp}
             disabled={!estimate || loading || !selectedVehicle}
-            className="min-h-12 flex-1 rounded-xl bg-emerald-600 px-4 font-semibold text-white shadow-sm transition hover:bg-emerald-700 disabled:opacity-50"
+            className="min-h-12 flex-1 rounded-xl bg-[#a3f542] px-4 font-semibold text-[#14200d] shadow-card transition hover:brightness-105 disabled:opacity-50"
           >
             Continue to {app.name}
           </button>

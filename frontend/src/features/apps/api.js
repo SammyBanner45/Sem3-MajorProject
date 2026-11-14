@@ -21,6 +21,7 @@ export async function apiRequest(path, options = {}) {
   const token = getStoredToken();
   const headers = new Headers(options.headers || {});
   if (options.body !== undefined && !headers.has('Content-Type')) headers.set('Content-Type', 'application/json');
+  headers.set('x-time-zone', Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Kolkata');
   if (token) headers.set('Authorization', `Bearer ${token}`);
   else headers.set('x-dev-user-id', devUserId);
 

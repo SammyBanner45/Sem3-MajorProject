@@ -1,7 +1,7 @@
 const factors = require('../../../frontend/src/data/emissionFactors.json');
 const prisma = require('../lib/prisma');
 const { calculateFood, calculateGrocery, calculateSavings, calculateTravel } = require('../services/co2Calculator');
-const { awardWithinDailyCap, canAddTravelLog, foodPoints, isDuplicateTrip, kolkataDayBounds } = require('../services/co2Rules');
+const { awardWithinDailyCap, canAddCategoryLog, canAddTravelLog, foodPoints, isDuplicateTrip, kolkataDayBounds, localDayBounds } = require('../services/co2Rules');
 const { getDistance, searchPlaces } = require('../services/distance');
 
 const vehicles = Object.keys(factors.travel);
@@ -41,7 +41,7 @@ async function saveTravel(req, res, next) {
     const result = await resolveTravel(req.body);
     if (!result.vehicle) throw new TypeError('vehicle is required');
     const savings = calculateSavings(result.vehicle, result.distanceKm);
-    const { start, end } = kolkataDayBounds();
+    const { start, end } = localDayBounds(new Date(), req.get('x-time-zone') || 'Asia/Kolkata');
     const [todayLogs, recentTrips] = await Promise.all([
       prisma.co2Log.findMany({ where: { userId: req.user.id, status: 'logged', createdAt: { gte: start, lt: end } }, select: { type: true, pointsEarned: true } }),
       prisma.co2Log.findMany({ where: { userId: req.user.id, type: 'travel', status: 'logged', createdAt: { gte: new Date(Date.now() - 3 * 60 * 60 * 1000) } }, select: { details: true } })
@@ -92,8 +92,9 @@ async function logFood(req, res, next) {
     const food = validateFood(req.body);
     const co2Kg = calculateFood(food);
     const requestedPoints = foodPoints(food.isVeg, food.nudges);
-    const { start, end } = kolkataDayBounds();
-    const todayLogs = await prisma.co2Log.findMany({ where: { userId: req.user.id, status: 'logged', createdAt: { gte: start, lt: end } }, select: { pointsEarned: true } });
+    const { start, end } = localDayBounds(new Date(), req.get('x-time-zone') || 'Asia/Kolkata');
+    const todayLogs = await prisma.co2Log.findMany({ where: { userId: req.user.id, type: 'food', status: 'logged', createdAt: { gte: start, lt: end } }, select: { pointsEarned: true } });
+    if (!canAddCategoryLog(todayLogs.length)) return res.status(409).json({ error: { code: 'FOOD_LOG_LIMIT', message: "You've reached today's limit of 10 food logs." } });
     const award = awardWithinDailyCap(requestedPoints, todayLogs.reduce((total, log) => total + log.pointsEarned, 0));
     const result = await prisma.co2Log.updateMany({ where: { id: req.params.id, userId: req.user.id, type: 'food', status: 'pending_log' }, data: {
       status: 'logged', co2Kg, savedKg: award.pointsEarned, pointsEarned: award.pointsEarned, details: food, loggedAt: new Date()
@@ -107,6 +108,9 @@ async function saveGrocery(req, res, next) {
   try {
     const { basketSize, productType, animalProducts, bagType } = req.body || {};
     const co2Kg = calculateGrocery({ basketSize, productType, animalProducts, bagType });
+    const { start, end } = localDayBounds(new Date(), req.get('x-time-zone') || 'Asia/Kolkata');
+    const todayCount = await prisma.co2Log.count({ where: { userId: req.user.id, type: 'grocery', status: 'logged', createdAt: { gte: start, lt: end } } });
+    if (!canAddCategoryLog(todayCount)) return res.status(409).json({ error: { code: 'GROCERY_LOG_LIMIT', message: "You've reached today's limit of 10 grocery logs." } });
     const log = await prisma.co2Log.create({ data: {
       userId: req.user.id,
       type: 'grocery',
@@ -134,13 +138,16 @@ async function listLogs(req, res, next) {
 
 async function summary(req, res, next) {
   try {
-    const logs = await prisma.co2Log.findMany({ where: { userId: req.user.id, status: 'logged' }, select: { type: true, co2Kg: true } });
+    const logs = await prisma.co2Log.findMany({ where: { userId: req.user.id, status: 'logged' }, select: { type: true, co2Kg: true, createdAt: true } });
     const totals = logs.reduce((result, log) => {
       result.totalKg += log.co2Kg;
       result[`${log.type}Kg`] += log.co2Kg;
       return result;
     }, { totalKg: 0, travelKg: 0, foodKg: 0, groceryKg: 0 });
-    return res.json({ ...totals, logCount: logs.length });
+    const { start, end } = kolkataDayBounds();
+    const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    const monthLogs = logs.filter((log) => log.createdAt >= monthStart);
+    return res.json({ ...totals, logCount: logs.length, monthLogCount: monthLogs.length });
   } catch (error) { return next(error); }
 }
 
