@@ -104,7 +104,7 @@ export default function Profile() {
     <div className="mx-auto max-w-3xl space-y-6 pb-6 sm:space-y-8">
       <header>
         <p className="text-sm font-semibold text-primary-container">Your account</p>
-        <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-on-surface sm:text-3xl">Profile</h1>
+        <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-on-surface sm:text-3xl">{user?.displayName || 'Profile'}</h1>
         <p className="mt-1 text-sm text-on-surface-variant">Manage your public profile and see the progress connected to your account.</p>
       </header>
 
