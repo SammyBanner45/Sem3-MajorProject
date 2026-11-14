@@ -431,6 +431,7 @@ The project is divided into three independent modules so each member can develop
 - Calculate estimated CO₂ emissions using average emission factors and the information provided.
 - Save and display the user's CO₂ logs through the backend API.
 - Maintain real-time telemetry updates across the global navigation bar (`TopBarPills`), Home screen (`MonthBars`), and Profile summary (`Co2SummarySlot`).
+- User Profile UI fix and enhancements including connection with CO2 data
 - Green Marketplace (In-App Store): Added a rewards preview section to the App Launcher page, displaying the top 3 available offers from the demo marketplace with one-tap access to the full rewards store. Built and owned by Member 3 (Sambuddha Banerjee).
 
 **Independent testing:** Use sample locations, predefined emission factors, and mock order details without depending on the activities or rewards modules.
