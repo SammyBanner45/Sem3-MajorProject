@@ -30,6 +30,17 @@ function getTodaySubmissionStatus(taskId, submissions) {
   return 'not done';
 }
 
+function getTimeUntilLocalReset() {
+  const now = new Date();
+  const reset = new Date(now);
+  reset.setHours(24, 0, 0, 0);
+  const totalSeconds = Math.max(0, Math.floor((reset.getTime() - now.getTime()) / 1000));
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return `${hours}h ${String(minutes).padStart(2, '0')}m ${String(seconds).padStart(2, '0')}s`;
+}
+
 export default function Activities() {
   const navigate = useNavigate();
   const [activities, setActivities] = useState([]);
@@ -37,7 +48,7 @@ export default function Activities() {
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('daily');
+  const [countdown, setCountdown] = useState(() => getTimeUntilLocalReset());
 
   async function loadData() {
     setLoading(true);
@@ -74,6 +85,13 @@ export default function Activities() {
     loadData();
   }, []);
 
+  useEffect(() => {
+    const updateCountdown = () => setCountdown(getTimeUntilLocalReset());
+    updateCountdown();
+    const intervalId = window.setInterval(updateCountdown, 1000);
+    return () => window.clearInterval(intervalId);
+  }, []);
+
   function handleStartProof(task) {
     navigate('/proof', {
       state: {
@@ -94,90 +112,16 @@ export default function Activities() {
 
   return (
     <div className="flex flex-col gap-space-lg select-none pb-8">
-      {/* Weekly Gold Chest Milestone Hero Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary-container via-surface-container-high to-secondary-container p-space-md shadow-xl text-surface-container-lowest border border-primary-container/40">
-        <div className="absolute -right-10 -top-10 w-36 h-36 bg-primary-fixed/20 rounded-full blur-2xl pointer-events-none"></div>
-        <div className="flex items-start justify-between relative z-10 gap-space-sm">
-          <div className="flex flex-col">
-            <span className="inline-flex items-center gap-1 font-label-chunky text-[11px] tracking-wider uppercase bg-surface-container-lowest/80 text-primary-fixed px-2 py-0.5 rounded-full w-fit mb-1 shadow-sm">
-              <span className="material-symbols-outlined text-[14px]">stars</span>
-              WEEKLY GOLD CHEST
-            </span>
-            <h2 className="font-headline-lg-mobile text-2xl font-black tracking-tight text-surface-container-lowest uppercase leading-none">
-              EARN 15 QUEST PTS
-            </h2>
-            <p className="font-body-md text-xs text-surface-container-lowest/90 font-bold mt-1">
-              Unlock in <span className="underline decoration-2">2 days</span> for 2x point multiplier
-            </p>
+      {/* Daily reset countdown */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#a3f542] to-[#7dd3fc] p-space-md shadow-xl text-[#0b0f0e] border border-white/30">
+        <div className="flex items-center justify-between gap-space-sm">
+          <div>
+            <p className="font-label-chunky text-[11px] tracking-wider uppercase text-[#183329]">Daily reset</p>
+            <h2 className="mt-1 font-headline-lg-mobile text-2xl font-black tracking-tight uppercase leading-none">{countdown}</h2>
+            <p className="mt-1 font-body-md text-xs text-[#183329]/85 font-bold">Until quests refresh at midnight</p>
           </div>
-          {/* Mystery Chest Icon */}
-          <div className="relative flex-shrink-0 flex items-center justify-center w-14 h-14 bg-surface-container-lowest text-tertiary-container rounded-2xl shadow-lg border-b-4 border-surface-container-highest animate-bounce">
-            <span className="material-symbols-outlined text-[32px]" style={{ fontVariationSettings: "'FILL' 1" }}>
-              inventory_2
-            </span>
-            <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-tertiary-container opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-4 w-4 bg-tertiary-fixed text-[9px] font-black text-on-tertiary items-center justify-center">
-                !
-              </span>
-            </span>
-          </div>
+          <span className="material-symbols-outlined text-[#183329]/75 text-[32px]" aria-hidden="true">schedule</span>
         </div>
-
-        {/* 5-Segment Progress Bar */}
-        <div className="mt-space-md pt-space-xs relative z-10">
-          <div className="flex items-center justify-between gap-1.5">
-            {[1, 2, 3, 4, 5].map((seg) => {
-              const isFilled = seg <= Math.min(5, completedCount + 2);
-              return (
-                <div key={seg} className="h-3 flex-1 bg-surface-container-lowest rounded-sm overflow-hidden p-0.5 shadow-inner">
-                  <div className={`h-full rounded-sm transition-all duration-300 ${isFilled ? 'bg-primary-container shadow-[0_0_8px_rgba(163,245,66,0.8)]' : 'bg-surface-container-highest/60'}`} />
-                </div>
-              );
-            })}
-          </div>
-          <div className="flex justify-between items-center mt-1.5 text-surface-container-lowest/90 font-label-mono-num text-[11px] font-extrabold">
-            <span>Step {Math.min(5, completedCount + 2)} of 5</span>
-            <span className="tracking-wide">LEVEL 4 ACTIVE</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Filter Tabs */}
-      <div className="flex items-center gap-space-xs bg-surface-container-lowest p-1 rounded-xl shadow-md border border-surface-container-high/40">
-        <button
-          type="button"
-          onClick={() => setActiveTab('daily')}
-          className={`tab-button flex-1 py-2 px-3 rounded-lg font-label-chunky text-[12px] uppercase transition-all duration-150 text-center ${
-            activeTab === 'daily'
-              ? 'bg-tertiary-container text-on-tertiary shadow-sm font-extrabold'
-              : 'text-on-surface-variant hover:text-on-surface'
-          }`}
-        >
-          DAILY ({activities.length})
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab('weekly')}
-          className={`tab-button flex-1 py-2 px-3 rounded-lg font-label-chunky text-[12px] uppercase transition-all duration-150 text-center ${
-            activeTab === 'weekly'
-              ? 'bg-tertiary-container text-on-tertiary shadow-sm font-extrabold'
-              : 'text-on-surface-variant hover:text-on-surface'
-          }`}
-        >
-          WEEKLY (7)
-        </button>
-        <button
-          type="button"
-          onClick={() => setActiveTab('badges')}
-          className={`tab-button flex-1 py-2 px-3 rounded-lg font-label-chunky text-[12px] uppercase transition-all duration-150 text-center ${
-            activeTab === 'badges'
-              ? 'bg-tertiary-container text-on-tertiary shadow-sm font-extrabold'
-              : 'text-on-surface-variant hover:text-on-surface'
-          }`}
-        >
-          BADGES (12)
-        </button>
       </div>
 
       {/* Quests Container */}
@@ -190,9 +134,6 @@ export default function Activities() {
               TODAY'S QUESTS
             </h3>
           </div>
-          <span className="font-label-mono-num text-[11px] text-on-surface-variant bg-surface-container px-2 py-0.5 rounded-full border border-surface-container-high">
-            RESET IN 14h 22m
-          </span>
         </div>
 
         {/* Error State */}
@@ -340,54 +281,6 @@ export default function Activities() {
           })}
       </div>
 
-      {/* Weekly Raid Community Target Progress Bar */}
-      <div className="relative bg-surface-container rounded-2xl p-space-md shadow-xl border-b-4 border-surface-container-lowest border border-surface-container-high/60 overflow-hidden mt-2">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-secondary-fixed text-[20px]">groups</span>
-            <h3 className="font-title-md text-sm font-black uppercase tracking-tight text-primary">
-              WEEKLY RAID
-            </h3>
-          </div>
-          <span className="font-label-mono-num text-[11px] font-bold bg-secondary-container/40 text-secondary-fixed px-2 py-0.5 rounded">
-            COMMUNITY TARGET
-          </span>
-        </div>
-        <p className="font-headline-md text-xl font-extrabold uppercase text-on-surface tracking-tight mb-space-sm">
-          50,000 KG <span className="text-on-surface-variant font-medium text-xs">CO₂ OFFSET</span>
-        </p>
-
-        <div className="w-full bg-surface-container-highest h-3 rounded-full overflow-hidden p-0.5 mb-2 shadow-inner">
-          <div
-            className="bg-gradient-to-r from-secondary-container via-primary-container to-primary-container h-full rounded-full relative"
-            style={{ width: '78%' }}
-          >
-            <span className="absolute right-1 top-0 bottom-0 w-1.5 bg-surface-bright rounded-full animate-ping"></span>
-          </div>
-        </div>
-
-        <div className="flex justify-between items-center font-label-mono-num text-[11px] mb-space-md">
-          <span className="text-primary-container font-extrabold">39,120 KG ACHIEVED</span>
-          <span className="text-on-surface-variant font-bold">78%</span>
-        </div>
-
-        {/* Mascot Dialogue Bubble */}
-        <div className="flex items-center gap-space-sm bg-surface-container-low p-space-sm rounded-xl border border-surface-container-high/40">
-          <div className="relative flex-shrink-0 w-10 h-10 bg-primary-container/20 rounded-full flex items-center justify-center">
-            <span className="material-symbols-outlined text-[24px] text-primary-container" style={{ fontVariationSettings: "'FILL' 1" }}>
-              eco
-            </span>
-            <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center shadow-md">
-              <span className="material-symbols-outlined text-[10px] font-black">thumb_up</span>
-            </span>
-          </div>
-          <div className="flex-1 bg-surface-container-highest/60 p-2 rounded-lg text-on-surface">
-            <p className="font-body-md text-xs font-bold leading-tight">
-              "Pacing ahead of schedule! <span className="text-primary-container">3 days left</span> to hit the goal and unlock the raid badge!"
-            </p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
