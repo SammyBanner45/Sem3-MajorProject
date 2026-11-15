@@ -130,11 +130,11 @@ export default function Home() {
         </div>
 
         <div className="flex items-center justify-between text-on-surface-variant font-label-mono-num text-[11px]">
-          <span>{progress.completed} of {progress.total} completed</span>
+          <span>{progress.completed} of 30 completed</span>
         </div>
 
         <div className="h-2 w-full overflow-hidden rounded-full bg-surface-container-highest">
-          <div className="h-full rounded-full bg-primary-container transition-all duration-500" style={{ width: `${progress.total ? Math.min(100, (progress.completed / progress.total) * 100) : 0}%` }} />
+          <div className="h-full rounded-full bg-primary-container transition-all duration-500" style={{ width: `${Math.min(100, (progress.completed / 30) * 100)}%` }} />
         </div>
       </Link>
 
