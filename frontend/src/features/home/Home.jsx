@@ -7,7 +7,7 @@ import { getTimeUntilLocalReset } from '../../lib/dailyReset.js';
 
 export default function Home() {
   const { user } = useAuth();
-  const [progress, setProgress] = useState({ completed: 0, total: 0 });
+  const [progress, setProgress] = useState({ completed: 0, total: 30 });
   const [currentStreak, setCurrentStreak] = useState(null);
   const [countdown, setCountdown] = useState(() => getTimeUntilLocalReset());
   const name = user?.displayName?.trim() || 'Alex';
@@ -33,7 +33,7 @@ export default function Home() {
         setProgress({ total: Array.isArray(tasks) ? tasks.length : 0, completed: completedIds.size });
         setCurrentStreak(stats.currentStreak);
       } catch {
-        if (active) { setProgress({ completed: 0, total: 0 }); setCurrentStreak(null); }
+        if (active) { setProgress({ completed: 0, total: 30 }); setCurrentStreak(null); }
       }
     };
     load();
@@ -55,15 +55,10 @@ export default function Home() {
     <div className="flex flex-col gap-space-lg select-none pb-8 max-w-md mx-auto">
       {/* Friendly Morning Greeting */}
       <section className="flex flex-col gap-1 pt-space-xs">
-        <div className="flex items-center justify-between">
+        <div>
           <h1 className="font-headline-lg-mobile text-2xl font-black text-primary tracking-tight uppercase">
-            Good Morning, {name}!
+            Welcome, {name}!
           </h1>
-          <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-surface-container text-primary-container shadow">
-            <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>
-              wb_sunny
-            </span>
-          </span>
         </div>
         <p className="font-body-md text-xs text-on-surface-variant font-medium">
           Ready for today's eco actions?
