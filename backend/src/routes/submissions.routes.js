@@ -1,9 +1,9 @@
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
 const crypto = require('crypto');
-const devAuthYug = require('../middleware/devAuthYug');
+const { requireAuth } = require('../middleware/auth');
+const prisma = require('../lib/prisma');
 const {
   submitPhoto,
   getMySubmissions,
@@ -12,11 +12,10 @@ const {
 
 const router = express.Router();
 
-// Ensure upload directory exists
+// Vercel functions have an ephemeral, read-only application bundle. Keep
+// uploads in memory there and persist them through Supabase Storage in the
+// service layer. Local development retains disk-backed uploads.
 const uploadDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
 
 const MIME_EXT_MAP = {
   'image/jpeg': '.jpg',
@@ -24,7 +23,7 @@ const MIME_EXT_MAP = {
   'image/webp': '.webp'
 };
 
-const storage = multer.diskStorage({
+const diskStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadDir);
   },
@@ -35,6 +34,10 @@ const storage = multer.diskStorage({
     cb(null, randomName);
   }
 });
+
+const storage = process.env.VERCEL
+  ? multer.memoryStorage()
+  : diskStorage;
 
 const allowedMimes = new Set(['image/jpeg', 'image/png', 'image/webp']);
 
@@ -73,7 +76,7 @@ function handleUpload(req, res, next) {
 }
 
 // All submissions endpoints require authentication
-router.use(devAuthYug);
+router.use(requireAuth(prisma));
 
 router.post('/', handleUpload, submitPhoto);
 router.get('/mine', getMySubmissions);

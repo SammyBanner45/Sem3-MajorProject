@@ -1,5 +1,7 @@
 const path = require('node:path');
-require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+if (!process.env.VERCEL) {
+  require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+}
 
 const express = require('express');
 const cors = require('cors');
@@ -20,9 +22,15 @@ const { errorHandler } = require('./middleware/errorHandler');
 const { assertJwtSecret } = require('./services/jwt');
 const { assertPasswordPepper } = require('./services/passwords');
 const { getPrismaClient } = require('./lib/prisma');
+const prisma = require('./lib/prisma');
 
 function corsOptions(origins = process.env.CORS_ORIGINS || '') {
-  const allowedOrigins = new Set(origins.split(',').map((origin) => origin.trim()).filter(Boolean));
+  const allowedOrigins = new Set([
+    ...origins.split(',').map((origin) => origin.trim()).filter(Boolean),
+    // Capacitor's native WebViews use these local origins for the bundled app.
+    'https://localhost',
+    'capacitor://localhost',
+  ]);
   return {
     origin(origin, callback) {
       callback(null, !origin || allowedOrigins.has(origin));
@@ -38,6 +46,10 @@ function createApp({ prisma }) {
   const app = express();
   app.use(cors(corsOptions()));
   app.use(express.json());
+
+  app.get('/', (req, res) => {
+    res.json({ status: 'ok', app: 'EcoSync API', health: '/api/health' });
+  });
 
   app.use('/health', healthRouter);
   app.get('/api/health', (req, res) => {
@@ -77,11 +89,19 @@ async function startServer({ port = process.env.PORT || 5000 } = {}) {
   return server;
 }
 
-if (require.main === module) {
+if (process.env.VERCEL) {
+  // Vercel's Express framework adapter loads this module as the application
+  // entrypoint. Export the Express app itself so every API route is served by
+  // the same app without a catch-all rewrite.
+  assertJwtSecret();
+  assertPasswordPepper();
+  module.exports = createApp({ prisma });
+} else if (require.main === module) {
   startServer().catch((error) => {
     console.error('Backend startup failed:', error.message);
     process.exitCode = 1;
   });
+  module.exports = { createApp, corsOptions, startServer };
+} else {
+  module.exports = { createApp, corsOptions, startServer };
 }
-
-module.exports = { createApp, corsOptions, startServer };

@@ -1,6 +1,123 @@
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 const prisma = require('../lib/prisma');
+
+const PHOTO_BUCKET = process.env.SUPABASE_STORAGE_BUCKET || 'submission-photos';
+let storageBucketPromise;
+
+function supabaseStorageConfig() {
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY;
+  if (!supabaseUrl || !serviceKey) {
+    throw new Error('Supabase Storage is not configured. Set SUPABASE_URL and a server-side Supabase service key.');
+  }
+  return { baseUrl: supabaseUrl.replace(/\/$/, ''), serviceKey };
+}
+
+function storageObjectUrl(bucket, objectPath) {
+  const { baseUrl } = supabaseStorageConfig();
+  const encodedPath = objectPath.split('/').map(encodeURIComponent).join('/');
+  return `${baseUrl}/storage/v1/object/${encodeURIComponent(bucket)}/${encodedPath}`;
+}
+
+async function ensurePrivateStorageBucket() {
+  const { baseUrl, serviceKey } = supabaseStorageConfig();
+  const bucketUrl = `${baseUrl}/storage/v1/bucket/${encodeURIComponent(PHOTO_BUCKET)}`;
+  const headers = { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` };
+
+  async function verifyPrivateBucket() {
+    const response = await fetch(bucketUrl, { headers });
+    if (!response.ok) {
+      throw new Error(`Could not verify the '${PHOTO_BUCKET}' Supabase Storage bucket (HTTP ${response.status}).`);
+    }
+    const bucket = await response.json();
+    if (bucket.public !== false) {
+      throw new Error(`The '${PHOTO_BUCKET}' Supabase Storage bucket must be private.`);
+    }
+  }
+
+  const existing = await fetch(bucketUrl, { headers });
+  if (existing.ok) {
+    const bucket = await existing.json();
+    if (bucket.public !== false) {
+      throw new Error(`The '${PHOTO_BUCKET}' Supabase Storage bucket must be private.`);
+    }
+    return;
+  }
+  if (existing.status !== 404) {
+    throw new Error(`Could not check the '${PHOTO_BUCKET}' Supabase Storage bucket (HTTP ${existing.status}).`);
+  }
+
+  const createResponse = await fetch(`${baseUrl}/storage/v1/bucket`, {
+    method: 'POST',
+    headers: { ...headers, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      id: PHOTO_BUCKET,
+      name: PHOTO_BUCKET,
+      public: false,
+      file_size_limit: 5 * 1024 * 1024,
+      allowed_mime_types: ['image/jpeg', 'image/png', 'image/webp']
+    })
+  });
+  if (createResponse.ok) return;
+  if (createResponse.status === 409) return verifyPrivateBucket();
+  throw new Error(`Could not create the private '${PHOTO_BUCKET}' Supabase Storage bucket (HTTP ${createResponse.status}).`);
+}
+
+async function ensureStorageBucket() {
+  if (!storageBucketPromise) {
+    storageBucketPromise = ensurePrivateStorageBucket().catch((error) => {
+      storageBucketPromise = undefined;
+      throw error;
+    });
+  }
+  return storageBucketPromise;
+}
+
+async function uploadPhotoToStorage({ objectPath, file }) {
+  await ensureStorageBucket();
+  const { serviceKey } = supabaseStorageConfig();
+  const response = await fetch(storageObjectUrl(PHOTO_BUCKET, objectPath), {
+    method: 'POST',
+    headers: {
+      apikey: serviceKey,
+      Authorization: `Bearer ${serviceKey}`,
+      'Content-Type': file.mimetype,
+      'x-upsert': 'false'
+    },
+    body: file.buffer
+  });
+  if (!response.ok) {
+    throw new Error(`Could not store photo in Supabase Storage (HTTP ${response.status}). Check that the private '${PHOTO_BUCKET}' bucket exists.`);
+  }
+}
+
+async function downloadPhotoFromStorage(objectPath) {
+  const { serviceKey } = supabaseStorageConfig();
+  const response = await fetch(storageObjectUrl(PHOTO_BUCKET, objectPath), {
+    headers: { apikey: serviceKey, Authorization: `Bearer ${serviceKey}` }
+  });
+  if (response.status === 404) throw new SubmissionError('Photo file not found in storage', 404);
+  if (!response.ok) throw new Error(`Could not retrieve photo from Supabase Storage (HTTP ${response.status}).`);
+  return Buffer.from(await response.arrayBuffer());
+}
+
+async function deletePhotoFromStorage(objectPath) {
+  const { baseUrl, serviceKey } = supabaseStorageConfig();
+  const response = await fetch(`${baseUrl}/storage/v1/object/${encodeURIComponent(PHOTO_BUCKET)}`, {
+    method: 'DELETE',
+    headers: {
+      apikey: serviceKey,
+      Authorization: `Bearer ${serviceKey}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ prefixes: [objectPath] })
+  });
+  if (!response.ok) {
+    console.error(`Could not clean up photo in Supabase Storage (HTTP ${response.status}).`);
+  }
+}
 
 class SubmissionError extends Error {
   constructor(message, statusCode = 400) {
@@ -64,6 +181,7 @@ async function createSubmission({ userId, taskId, file }) {
     throw new SubmissionError('taskId is required', 400);
   }
 
+  let storedObjectPath;
   try {
     // 1. Task must exist and be active
     const task = await prisma.task.findUnique({
@@ -102,14 +220,24 @@ async function createSubmission({ userId, taskId, file }) {
       throw new SubmissionError('You have already submitted photo proof for this task today', 409);
     }
 
-    // Relative photo URL stored in DB
-    const relativePhotoPath = `uploads/${file.filename}`;
+    // Persist production photos in Supabase Storage. Local development keeps
+    // its existing disk-backed behavior for compatibility with the web app.
+    let photoUrl;
+    if (process.env.VERCEL) {
+      const ext = file.mimetype === 'image/png' ? '.png'
+        : file.mimetype === 'image/webp' ? '.webp' : '.jpg';
+      storedObjectPath = `${userId}/${crypto.randomUUID()}${ext}`;
+      await uploadPhotoToStorage({ objectPath: storedObjectPath, file });
+      photoUrl = `storage://${storedObjectPath}`;
+    } else {
+      photoUrl = `uploads/${file.filename}`;
+    }
 
     const submission = await prisma.submission.create({
       data: {
         userId,
         taskId,
-        photoUrl: relativePhotoPath,
+        photoUrl,
         status: 'pending'
       },
       include: {
@@ -127,6 +255,9 @@ async function createSubmission({ userId, taskId, file }) {
   } catch (error) {
     // Clean up file if database write or checks failed
     safeDeleteFile(file.path);
+    if (storedObjectPath) {
+      await deletePhotoFromStorage(storedObjectPath).catch(() => {});
+    }
     throw error;
   }
 }
@@ -189,6 +320,14 @@ async function getSubmissionPhoto({ submissionId, userId, userRole }) {
   const isOwner = submission.userId === userId;
   if (!isOwner && !isAdmin) {
     throw new SubmissionError('Forbidden: You do not have permission to view this photo', 403);
+  }
+
+  if (submission.photoUrl.startsWith('storage://')) {
+    const objectPath = submission.photoUrl.slice('storage://'.length);
+    const ext = path.extname(objectPath).toLowerCase();
+    const contentType = ext === '.png' ? 'image/png' : ext === '.webp' ? 'image/webp' : 'image/jpeg';
+    const buffer = await downloadPhotoFromStorage(objectPath);
+    return { buffer, contentType };
   }
 
   const filename = path.basename(submission.photoUrl);
