@@ -53,7 +53,7 @@ async function streamSubmissionPhoto(req, res, next) {
     const userId = req.user.id;
     const userRole = req.user.role;
 
-    const { filePath, contentType } = await getSubmissionPhoto({
+    const { filePath, buffer, contentType } = await getSubmissionPhoto({
       submissionId,
       userId,
       userRole
@@ -61,6 +61,8 @@ async function streamSubmissionPhoto(req, res, next) {
 
     res.setHeader('Content-Type', contentType);
     res.setHeader('Cache-Control', 'private, max-age=86400');
+
+    if (buffer) return res.end(buffer);
 
     const readStream = fs.createReadStream(filePath);
     readStream.on('error', (err) => next(err));

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "node src/index.js",
     "start": "node src/index.js",
+    "vercel-build": "DATABASE_URL=\"${POSTGRES_URL_NON_POOLING:-$POSTGRES_PRISMA_URL}\" prisma migrate deploy && prisma generate",
     "test": "node --test src/services/co2Calculator.test.js",
     "prisma": "prisma",
     "prisma:generate": "prisma generate",
@@ -29,5 +30,8 @@
   },
   "devDependencies": {
     "prisma": "7.10.1"
+  },
+  "engines": {
+    "node": "22.x"
   }
 }

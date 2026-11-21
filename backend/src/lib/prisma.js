@@ -1,8 +1,31 @@
+const fs = require('node:fs');
+const path = require('node:path');
+
 let prismaPromise;
 
+function getPostgresConfig(connectionString) {
+  const url = new URL(connectionString);
+  // node-postgres replaces its explicit `ssl` config when SSL parameters are
+  // present in the connection string. Remove those parameters so the bundled
+  // Supabase CA and strict certificate verification are always applied.
+  for (const parameter of ['sslmode', 'sslrootcert', 'sslcert', 'sslkey']) {
+    url.searchParams.delete(parameter);
+  }
+
+  return {
+    connectionString: url.toString(),
+    ssl: {
+      ca: fs.readFileSync(path.resolve(__dirname, '../generated/supabase-prod-ca-2021.crt'), 'utf8'),
+      rejectUnauthorized: true,
+    },
+    max: 1,
+  };
+}
+
 function getPrismaClient() {
-  if (!process.env.DATABASE_URL) {
-    throw new Error('DATABASE_URL must be set before creating Prisma Client');
+  const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_PRISMA_URL;
+  if (!connectionString) {
+    throw new Error('DATABASE_URL or POSTGRES_PRISMA_URL must be set before creating Prisma Client');
   }
 
   if (!prismaPromise) {
@@ -10,7 +33,7 @@ function getPrismaClient() {
       import('../generated/prisma/client.mts'),
       import('@prisma/adapter-pg'),
     ]).then(([{ PrismaClient }, { PrismaPg }]) => {
-      const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+      const adapter = new PrismaPg(getPostgresConfig(connectionString));
       return new PrismaClient({ adapter });
     }).catch((error) => {
       prismaPromise = undefined;
