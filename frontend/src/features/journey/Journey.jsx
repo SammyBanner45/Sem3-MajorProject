@@ -1,8 +1,12 @@
 import React from 'react';
+import EcoWorld3D from './EcoWorld3D.jsx';
 
 export default function Journey() {
   return (
     <div className="flex flex-col w-full relative max-w-md mx-auto pt-2 pb-12 select-none">
+      {/* Interactive 3D Eco-World */}
+      <EcoWorld3D />
+
       {/* Zone Selector Floating Bar */}
       <div className="sticky top-0 z-30 pt-space-xs pb-space-sm bg-surface-container-lowest/90 backdrop-blur-md">
         <div className="flex items-center justify-between gap-space-xs bg-surface-container-high p-1 rounded-xl shadow-md">

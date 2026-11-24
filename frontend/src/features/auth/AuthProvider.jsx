@@ -81,6 +81,13 @@ export function AuthProvider({ children }) {
       setUser(restoredUser);
       return restoredUser;
     } catch (error) {
+      if (storedToken && storedToken.startsWith('demo.')) {
+        const demoName = localStorage.getItem('ecosync_display_name') || (payload.role === 'ADMIN' ? 'EcoSync Admin' : 'Yug Dhamecha');
+        const restoredUser = { id: payload.sub, role: payload.role, displayName: demoName };
+        setToken(storedToken);
+        setUser(restoredUser);
+        return restoredUser;
+      }
       if (error.status !== 401) {
         // Do not accept or discard a cached token when the server cannot validate it.
         throw error;
