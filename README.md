@@ -252,6 +252,8 @@ The following tables describe the intended application data. Their exact fields 
 | `co2_logs` | Estimated CO₂ results for rides and orders |
 | `coupons` | Fixed coupon milestones and recurring milestone configuration |
 | `user_coupons` | Earned coupons, milestone day, generated code, and award date |
+| `rewards` | Fictional demo marketplace offers and stock |
+| `redemptions` | User-scoped reward purchases, codes, statuses, and expiry |
 | `leaderboard_monthly` | View or query of approved points earned by each user during the current month |
 
 ## 📐 How It Works
@@ -334,6 +336,36 @@ The App Launcher estimates carbon emissions using AI-assisted calculations based
 - Users can track their estimated emissions over time.
 
 > **Note:** Estimates are based on average emissions and simplified assumptions. They are intended to encourage environmental awareness, not provide exact measurements. Food-order estimates are optional and depend on the information users provide.
+
+### CO₂ Points (Member 3)
+
+The App Launcher uses a self-reported estimate model: **1 point = 1 kg CO₂e saved**. Travel compares the selected mode with a same-distance petrol-cab baseline. Only bus, metro, and electric cab selections earn travel points; walking and cycling have zero direct emissions, and other modes earn zero points. Food earns 0.3 points for a vegetarian order plus 0.2 points per accepted sustainability nudge. Self-reported travel and food points are capped at 5 points per user per Asia/Kolkata calendar day.
+
+All factors are labelled estimates and include a `verify` source marker where the project still needs validation. Points are stored as `Float` values and rounded only for display. The CO₂ models are owned by Member 3 and cascade when the related profile is deleted.
+
+The points dashboard exposes `/api/points/summary`, `/api/points/history`, and `/api/points/ledger`. The demo marketplace exposes `/api/rewards` and wallet endpoints; all offers are fictional, tagged `demo`, and use the same user-scoped points balance. Profile integrations can use the exported `TopBarPills`, `MonthBars`, and `FootprintTab` components from `frontend/src/features/apps/`.
+
+The exact Prisma additions for the shared schema are:
+
+```prisma
+// Add inside model Co2Log:
+  savedKg       Float   @default(0)
+  pointsEarned  Float   @default(0)
+  chosenVehicle String?
+
+// Add as new schema blocks:
+enum RewardKind {
+  voucher
+  physical
+  donation
+}
+
+enum RedemptionStatus {
+  active
+  used
+  expired
+}
+```
 
 ### 🏆 Monthly Leaderboard
 

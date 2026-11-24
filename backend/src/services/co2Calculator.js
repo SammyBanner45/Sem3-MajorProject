@@ -1,4 +1,6 @@
 const factors = require('../../../frontend/src/data/emissionFactors.json');
+const POINTS_PER_KG = 1;
+const POINTS_VEHICLES = new Set(['bus', 'metro', 'cab_ev']);
 
 function assertNonNegativeNumber(value, name) {
   if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) {
@@ -15,6 +17,19 @@ function calculateTravel(distanceKm, vehicle) {
   }
 
   return distanceKm * factor.value;
+}
+
+function calculateSavings(chosenVehicle, distanceKm) {
+  assertNonNegativeNumber(distanceKm, 'distanceKm');
+  const chosenFactor = factors.travel[chosenVehicle];
+  const baselineFactor = factors.travel.cab_petrol;
+  if (!chosenFactor) throw new RangeError(`Unknown travel vehicle: ${chosenVehicle}`);
+
+  const co2Kg = distanceKm * chosenFactor.value;
+  const baselineKg = distanceKm * baselineFactor.value;
+  const savedKg = Math.max(0, baselineKg - co2Kg);
+  const points = POINTS_VEHICLES.has(chosenVehicle) ? savedKg * POINTS_PER_KG : 0;
+  return { co2Kg, baselineKg, savedKg, points };
 }
 
 function calculateFood({ items, isVeg, deliveryKm = 0, packaging = false }) {
@@ -38,4 +53,4 @@ function calculateFood({ items, isVeg, deliveryKm = 0, packaging = false }) {
   return itemCount * itemFactor.value + deliveryEmissions + packagingEmissions;
 }
 
-module.exports = { calculateTravel, calculateFood };
+module.exports = { POINTS_PER_KG, calculateTravel, calculateSavings, calculateFood };
